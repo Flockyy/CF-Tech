@@ -6,13 +6,11 @@ from sqlmodel import Field, SQLModel
 from datetime import datetime
 
 
-class User(SQLModel, table=True):
+class User(SQLModel):
     """
     User model that serves as a base for other user types like Trainee and Trainer.
     This model can be extended with additional fields specific to different user roles.
     """
-
-    __tablename__ = "users"
 
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
     first_name: str = Field(..., min_length=2, max_length=50)
