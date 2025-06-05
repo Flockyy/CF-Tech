@@ -13,15 +13,16 @@ class TrainingStatus(str, enum.Enum):
 
 class Registration(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
+    # TODO: add the foreign key constraint
     trainee_id: int | None = Field(default=None)
+    # TODO: add the foreign key constraint
     session_id: int | None = Field(default=None)
     registration_date: date = Field(default=date.today())
+    # TODO: check if the registration_status is in TrainingStatus
     registration_status: str = Field(
         default=TrainingStatus.registered_for_training, sa_column=TrainingStatus
     )
 
-
-# TODO: check if the registration_status is in TrainingStatus
 
 # def create_registrations():
 #     reg1 = Registration(
