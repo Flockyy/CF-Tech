@@ -3,9 +3,9 @@ from datetime import datetime
 from sqlmodel import SQLModel, Field
 
 
-class Duties(SQLModel, table=True):
+class Duty(SQLModel, table=True):
     """
-    Duties model that represents the various duties assigned to staff.
+    Duty model that represents the various duties assigned to staff.
     """
 
     __tablename__ = "duties"
@@ -16,18 +16,18 @@ class Duties(SQLModel, table=True):
     created_at: datetime = Field(default_factory=datetime.now)
 
 
-class DutiesCreate(SQLModel):
+class DutyCreate(SQLModel):
     """
-    Duties creation model that can be used for creating new duties.
+    Duty creation model that can be used for creating new duties.
     """
 
     staff_id: uuid.UUID = Field(..., foreign_key="staff.id")
     description: str = Field(..., max_length=255)
 
 
-class DutiesUpdate(SQLModel):
+class DutyUpdate(SQLModel):
     """
-    Duties update model that can be used for updating existing duties.
+    Duty update model that can be used for updating existing duties.
     """
 
     description: str = Field(

@@ -1,4 +1,4 @@
-from user import User
+from .user import User
 from typing import Optional
 from sqlmodel import SQLModel, Field
 from datetime import datetime

@@ -1,4 +1,4 @@
-from user import User
+from .user import User
 from typing import Optional
 from sqlmodel import SQLModel, Field
 from datetime import datetime
@@ -30,4 +30,14 @@ class TrainerCreate(User, SQLModel):
 
     specialty: str = Field(..., max_length=100)
     hourly_rate: float = Field(..., ge=0)
+    bio: Optional[str] = Field(default=None, max_length=500)
+
+class TrainerUpdate(User, SQLModel):
+    """
+    Trainer update model that can be used for updating existing trainers.
+    This model can be extended with additional fields specific to trainers.
+    """
+
+    specialty: Optional[str] = Field(default=None, max_length=100)
+    hourly_rate: Optional[float] = Field(default=None, ge=0)
     bio: Optional[str] = Field(default=None, max_length=500)
