@@ -1,5 +1,6 @@
 from sqlmodel import Field, SQLModel, Relationship, create_engine
-from room_equipment_link import RoomEquipmentLink
+from app.models.room_equipment_link import RoomEquipmentLink
+from app.models.equipment import Equipment
 
 
 class Room(SQLModel, table=True):
@@ -12,19 +13,13 @@ class Room(SQLModel, table=True):
     location: str = Field(schema_extra={"example": "Building North, 1st floor"})
     is_active: bool = Field(default=True)
 
-    equipments: list["Equipment"] = Relationship(back_populates="rooms", link_model=RoomEquipmentLink)
+    equipments: list[Equipment] = Relationship(back_populates="rooms", link_model=RoomEquipmentLink)
 
 
 def test():
     room1 = Room(name="A101", capacity=12, location="Building North, 1st floor")
     print(room1)
 
-    sqlite_file_name = "database.db"
-    sqlite_url = f"sqlite:///{sqlite_file_name}"
-
-    engine = create_engine(sqlite_url, echo=True)
-
-    SQLModel.metadata.create_all(engine)
 
 if __name__ == "__main__":
     test()

@@ -1,5 +1,5 @@
 from sqlmodel import Field, SQLModel, Relationship
-from room_equipment_link import RoomEquipmentLink
+from app.models.room_equipment_link import RoomEquipmentLink
 
 
 class Equipment(SQLModel, table=True):
@@ -12,7 +12,7 @@ class Equipment(SQLModel, table=True):
     # Optional
     serial_number: str | None = Field(default=None)
 
-    rooms: list["Rooms"] = Relationship(back_populates="rooms", link_model=RoomEquipmentLink)
+    rooms: list["Room"] = Relationship(back_populates="rooms", link_model=RoomEquipmentLink)
 
 
 def test():
