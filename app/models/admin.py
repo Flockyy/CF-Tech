@@ -1,6 +1,6 @@
-from models.user import User
+from user import User
 from datetime import datetime
-from sqlmodel import Field
+from sqlmodel import SQLModel, Field
 
 
 class Admin(User, table=True):
@@ -16,6 +16,26 @@ class Admin(User, table=True):
     )  # Level of administrative privileges (1-2)
     promotion_date: datetime = Field(default_factory=datetime.now)
 
-    class Config:
-        # Allows compatibility with ORM models like SQLModel or SQLAlchemy
-        orm_mode = True
+
+class AdminCreate(User, SQLModel):
+    """
+    Admin creation model that can be used for creating new administrators.
+    This model can be extended with additional fields specific to administrators.
+    """
+
+    admin_level: int = Field(
+        ..., ge=1, le=2
+    )  # Level of administrative privileges (1-2)
+    promotion_date: datetime = Field(default_factory=datetime.now)
+
+
+class AdminUpdate(User, SQLModel):
+    """
+    Admin update model that can be used for updating existing administrators.
+    This model can be extended with additional fields specific to administrators.
+    """
+
+    admin_level: int = Field(
+        None, ge=1, le=2
+    )  # Level of administrative privileges (1-2)
+    promotion_date: datetime = Field(None)  # Date of promotion or last update

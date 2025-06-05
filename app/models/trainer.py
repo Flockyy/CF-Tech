@@ -1,6 +1,6 @@
-from models.user import User
+from user import User
 from typing import Optional
-from sqlmodel import Field
+from sqlmodel import SQLModel, Field
 from datetime import datetime
 
 
@@ -21,6 +21,13 @@ class Trainer(User, table=True):
         default=None, max_length=500
     )  # Short biography of the trainer
 
-    class Config:
-        # Allows compatibility with ORM models like SQLModel or SQLAlchemy
-        orm_mode = True
+
+class TrainerCreate(User, SQLModel):
+    """
+    Trainer creation model that can be used for creating new trainers.
+    This model can be extended with additional fields specific to trainers.
+    """
+
+    specialty: str = Field(..., max_length=100)
+    hourly_rate: float = Field(..., ge=0)
+    bio: Optional[str] = Field(default=None, max_length=500)
