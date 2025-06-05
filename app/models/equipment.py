@@ -1,4 +1,5 @@
-from sqlmodel import Field, SQLModel
+from sqlmodel import Field, SQLModel, Relationship
+from room_equipment_link import RoomEquipmentLink
 
 
 class Equipment(SQLModel, table=True):
@@ -10,6 +11,8 @@ class Equipment(SQLModel, table=True):
     name: str = Field(unique=True)
     # Optional
     serial_number: str | None = Field(default=None)
+
+    rooms: list["Rooms"] = Relationship(back_populates="rooms", link_model=RoomEquipmentLink)
 
 
 def test():

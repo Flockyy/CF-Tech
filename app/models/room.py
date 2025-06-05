@@ -1,4 +1,5 @@
-from sqlmodel import Field, SQLModel, create_engine
+from sqlmodel import Field, SQLModel, Relationship, create_engine
+from room_equipment_link import RoomEquipmentLink
 
 
 class Room(SQLModel, table=True):
@@ -10,6 +11,8 @@ class Room(SQLModel, table=True):
     capacity: int = Field(ge=1)
     location: str = Field(schema_extra={"example": "Building North, 1st floor"})
     is_active: bool = Field(default=True)
+
+    equipments: list["Equipment"] = Relationship(back_populates="rooms", link_model=RoomEquipmentLink)
 
 
 def test():
