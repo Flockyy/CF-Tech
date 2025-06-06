@@ -32,6 +32,7 @@ def launch_pytest() -> None:
     This function is a placeholder for launching pytest.
     It can be used to run tests before the application starts.
     """
+    # TODO: Implement pytest launch logic
     logger.info("Launching pytest...")
     # Here you would typically call pytest.main() or similar
     # For example: pytest.main(["-q", "--tb=short", "app/tests"])
