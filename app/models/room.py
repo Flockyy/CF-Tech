@@ -11,7 +11,7 @@ class RoomBase(SQLModel, table=True):
     The rules applied here are directly the rule applied to the SQL database.
     """
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
-    name: str = Field(unique=True)
+    name: str = Field(..., unique=True, min_length=2, max_length=50)
     location: str = Field(..., min_length=2, max_length=50)
     capacity: int | None = Field(default=None, ge=1)
     is_active: bool = Field(default=True)
