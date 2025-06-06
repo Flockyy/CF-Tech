@@ -22,3 +22,7 @@ class DutyUpdate(BaseModel):
     staff_id: uuid.UUID = Field(
         None, foreign_key="staff.id"
     )  # Optional field for updating the staff ID
+
+
+class DutyPublic(DutyCreate):
+    id: uuid.UUID

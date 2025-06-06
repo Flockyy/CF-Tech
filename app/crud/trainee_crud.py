@@ -54,3 +54,12 @@ def delete_trainee(session: Session, trainee_id: str) -> None:
 
     session.delete(db_trainee)
     session.commit()
+
+def get_trainee_by_email(session: Session, email: str) -> Trainee:
+    """
+    Retrieve a trainee by their email from the database.
+    """
+    db_trainee = session.exec(Trainee.select().where(Trainee.email == email)).first()
+    if not db_trainee:
+        raise ValueError("Trainee with this email not found")
+    return db_trainee
