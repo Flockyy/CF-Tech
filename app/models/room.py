@@ -1,23 +1,26 @@
-from sqlmodel import Field, SQLModel, Relationship, create_engine
-from app.models.room_equipment_link import RoomEquipmentLink
-from app.models.equipment import Equipment
+import uuid
+
+from sqlmodel import Field, SQLModel#, Relationship, create_engine
+# from app.models.room_equipment_link import RoomEquipmentLink
+# from app.models.equipment import Equipment
 
 
-class Room(SQLModel, table=True):
+class RoomBase(SQLModel, table=True):
     """
-    Room model to describe each room in the training center.
+    Room model to describe each entry of room in the database.
+    The rules applied here are directly the rule applied to the SQL database.
     """
-    id: int | None = Field(default=None, primary_key=True)
+    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
     name: str = Field(unique=True)
-    capacity: int = Field(ge=1)
-    location: str = Field(schema_extra={"example": "Building North, 1st floor"})
+    location: str = Field(..., min_length=2, max_length=50)
+    capacity: int | None = Field(default=None, ge=1)
     is_active: bool = Field(default=True)
 
-    equipments: list[Equipment] = Relationship(back_populates="rooms", link_model=RoomEquipmentLink)
+#    equipments: list[Equipment] | None = Relationship(back_populates="rooms", link_model=RoomEquipmentLink)
 
 
 def test():
-    room1 = Room(name="A101", capacity=12, location="Building North, 1st floor")
+    room1 = RoomBase(name="A101", capacity=12, location="Building North, 1st floor")
     print(room1)
 
 
