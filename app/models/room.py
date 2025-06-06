@@ -1,11 +1,6 @@
 import uuid
 
-from sqlmodel import Field, SQLModel  # , Relationship, create_engine
-
-# TODO: many-to-many relationship with equipment
-# from app.models.room_equipment_link import RoomEquipmentLink
-# from app.models.equipment import Equipment
-
+from sqlmodel import Field, SQLModel, Relationship
 
 class RoomBase(SQLModel, table=True):
     """
@@ -21,9 +16,7 @@ class RoomBase(SQLModel, table=True):
     capacity: int | None = Field(default=None, ge=1)
     is_active: bool = Field(default=True)
 
-
-# TODO: many-to-many relationship with equipment
-#    equipments: list[Equipment] | None = Relationship(back_populates="rooms", link_model=RoomEquipmentLink)
+    equipments: list["EquipmentBase"] = Relationship(back_populates="room")
 
 
 class EquipmentBase(SQLModel, table=True):
@@ -36,12 +29,11 @@ class EquipmentBase(SQLModel, table=True):
     __tablename__ = "equipments"
 
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
-    id_room: uuid.UUID | None = Field(default=None, foreign_key="rooms.id")
     name: str = Field(..., unique=True, min_length=2, max_length=50)
     serial_number: str | None = Field(default=None, unique=True, min_length=2, max_length=50)
 
-# TODO: many-to-many relationship with equipment
-#    rooms: list["Room"] = Relationship(back_populates="rooms", link_model=RoomEquipmentLink)
+    id_room: uuid.UUID | None = Field(default=None, foreign_key="rooms.id")
+    room: RoomBase | None = Relationship(back_populates="equipments")
 
 
 
