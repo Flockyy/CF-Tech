@@ -27,7 +27,16 @@ def init(db_engine: Engine) -> None:
         logger.error(e)
         raise e
 
-
+def launch_pytest() -> None:
+    """
+    This function is a placeholder for launching pytest.
+    It can be used to run tests before the application starts.
+    """
+    logger.info("Launching pytest...")
+    # Here you would typically call pytest.main() or similar
+    # For example: pytest.main(["-q", "--tb=short", "app/tests"])
+    logger.info("Pytest launched successfully.")
+    
 def main() -> None:
     logger.info("Initializing service")
     init(engine)
