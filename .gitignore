@@ -228,3 +228,6 @@ Temporary Items
 
 # Temporary files
 *.db
+
+# Archived file
+*_arch
