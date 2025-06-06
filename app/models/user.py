@@ -17,7 +17,3 @@ class User(SQLModel, table=False):
     created_at: datetime = Field(default_factory=datetime.now)
     is_active: bool = Field(default=True)
     role: str = Field(default="user", max_length=20)
-
-    # class Config:
-    #     from_attributes = True
-    #     validate_by_name = True
