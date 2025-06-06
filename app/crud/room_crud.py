@@ -28,7 +28,7 @@ def create_classroom(db: Session, room_in: ClassroomCreate) -> RoomBase:
     return room_db
 
 
-def main():
+def test():
     """Test the module functions"""
 
     sqlite_file_name = "database.db"
@@ -47,4 +47,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    test()
