@@ -226,6 +226,8 @@ Temporary Items
 # iCloud generated files
 *.icloud
 
+# Temporary files
+*.db
 
 # Archived file
 *_arch
