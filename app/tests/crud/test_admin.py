@@ -1,4 +1,5 @@
-from app.models.admin import Admin, AdminCreate, AdminUpdate
+from app.models.admin import Admin
+from app.schemas.admin_schema import AdminCreate, AdminUpdate
 from datetime import datetime
 
 
@@ -6,7 +7,7 @@ def test_admin_create():
     """
     Test the creation of an Admin instance.
     """
-    
+
     admin_data = AdminCreate(
         first_name="John",
         last_name="Doe",
@@ -31,7 +32,7 @@ def test_admin_update():
     """
     Test the update of an Admin instance.
     """
-    
+
     admin_data = AdminUpdate(
         first_name="Jane",
         last_name="Doe",

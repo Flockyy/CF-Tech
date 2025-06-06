@@ -1,22 +1,8 @@
+from pydantic import BaseModel, Field
 import uuid
-from datetime import datetime
-from sqlmodel import SQLModel, Field
 
 
-class Duty(SQLModel, table=True):
-    """
-    Duty model that represents the various duties assigned to staff.
-    """
-
-    __tablename__ = "duties"
-
-    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
-    staff_id: uuid.UUID = Field(foreign_key="staff.id")
-    description: str = Field(..., max_length=255)
-    created_at: datetime = Field(default_factory=datetime.now)
-
-
-class DutyCreate(SQLModel):
+class DutyCreate(BaseModel):
     """
     Duty creation model that can be used for creating new duties.
     """
@@ -25,7 +11,7 @@ class DutyCreate(SQLModel):
     description: str = Field(..., max_length=255)
 
 
-class DutyUpdate(SQLModel):
+class DutyUpdate(BaseModel):
     """
     Duty update model that can be used for updating existing duties.
     """
