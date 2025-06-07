@@ -4,8 +4,8 @@ from datetime import date
 
 
 class RegistrationBase(SQLModel, table=True):
-    """Registration model to describe a regisration that can be linked
-    to a trainee for a session.
+    """
+    Registration model to describe a regisration that can be linked to a trainee for a course.
     The rules applied here are directly the rules applied to the SQL database.
     """
 
@@ -15,7 +15,7 @@ class RegistrationBase(SQLModel, table=True):
     # TODO: add the foreign key constraint
     trainee_id: uuid.UUID = Field(...)
     # TODO: add the foreign key constraint
-    session_id: uuid.UUID = Field(...)
+    course_id: uuid.UUID = Field(...)
     registration_date: date = Field(...)
     registration_status: str = Field(...)
 
@@ -23,9 +23,9 @@ class RegistrationBase(SQLModel, table=True):
 def test():
     reg1 = RegistrationBase(
         trainee_id=uuid.uuid4(),
-        session_id=uuid.uuid4(),
+        course_id=uuid.uuid4(),
         registration_date="2025-06-06",
-        registration_status="TRAINING",
+        registration_status="PENDING",
     )
     print(reg1)
 

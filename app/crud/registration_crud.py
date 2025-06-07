@@ -24,7 +24,7 @@ def create_registration(
     """
     registration_db = RegistrationBase(
         trainee_id=registration_in.trainee_id,
-        session_id=registration_in.session_id,
+        course_id=registration_in.course_id,
         registration_date=registration_in.registration_date,
         registration_status=registration_in.registration_status,
     )
@@ -46,7 +46,7 @@ def test():
 
     reg1 = RegistrationCreate(
         trainee_id=uuid.uuid4(),
-        session_id=uuid.uuid4(),
+        course_id=uuid.uuid4(),
         registration_date=date.today(),
         registration_status=RegistrationStatus.training,
     )
