@@ -2,10 +2,9 @@ import os, sys
 
 sys.path.append(os.getcwd())
 from sqlmodel import Session, create_engine, SQLModel
-from app.models.courses import CourseBase
-from app.schemas.course_schema import CourseCreate, CourseStatus
+from app.models.course import CourseBase
+from app.schemas.course_schema import CourseCreate
 import uuid
-from datetime import date
 
 
 def create_course(db: Session, course_in: CourseCreate) -> CourseBase:

@@ -1,7 +1,7 @@
 from typing import Optional, Self
 import uuid
 from pydantic import BaseModel, Field, model_validator
-from datetime import date, timedelta
+from datetime import date
 import enum
 
 
@@ -20,7 +20,6 @@ class CourseCreate(BaseModel):
 
     title: str = Field(..., min_length=2, max_length=100)
     description: Optional[str] = None
-    # TODO: add a test to verify if date_start < date_end
     date_start: date = Field(
         ...,
         description="Starting date of a course in ISO format (YYYY-MM-DD), must be < to ending date",
