@@ -1,7 +1,8 @@
 from pydantic import BaseModel, Field
+from app.models.user import User
 from app.schemas.user_schema import UserCreate, UserUpdate
 from datetime import datetime
-
+import uuid
 
 class AdminCreate(UserCreate, BaseModel):
     """
@@ -25,3 +26,6 @@ class AdminUpdate(UserUpdate, BaseModel):
         None, ge=1, le=2
     )  # Level of administrative privileges (1-2)
     promotion_date: datetime = Field(None)  # Date of promotion or last update
+
+class AdminPublic(User):
+    id: uuid.UUID

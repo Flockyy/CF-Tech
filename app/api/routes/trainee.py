@@ -63,3 +63,11 @@ def delete_trainee(*, session: SessionDep, trainee_id: str):
     trainee_crud.delete_trainee(session=session, trainee_id=trainee_id)
 
     return {"message": "Trainee deleted successfully."}
+
+@router.get("/", response_model=list[TraineePublic])
+def list_trainees(*, session: SessionDep):
+    """
+    List all trainees.
+    """
+    trainees = trainee_crud.get_all_trainees(session=session)
+    return trainees

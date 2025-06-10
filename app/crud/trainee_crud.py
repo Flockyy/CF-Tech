@@ -23,6 +23,11 @@ def get_trainee(session: Session, trainee_id: str) -> Trainee:
         raise ValueError("Trainee not found")
     return db_trainee
 
+def get_all_trainees(session: Session) -> list[Trainee]:
+    """
+    Retrieve all trainees from the database.
+    """
+    return session.exec(Trainee.select()).all()
 
 def update_trainee(
     session: Session, trainee_id: str, trainee_update: TraineeUpdate

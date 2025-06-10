@@ -63,5 +63,4 @@ class TraineePublic(User):
     Public model for Trainee that can be used for displaying trainee information.
     This model can be extended with additional fields specific to public views.
     """
-
     id: uuid.UUID

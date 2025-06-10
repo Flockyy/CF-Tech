@@ -21,6 +21,11 @@ def get_admin(session: Session, admin_id: str) -> Admin:
     """
     return session.get(Admin, admin_id)
 
+def get_all_admins(session: Session) -> list[Admin]:
+    """
+    Retrieve all admins from the database.
+    """
+    return session.exec(Admin.select()).all()
 
 def update_admin(session: Session, admin_id: str, admin_update: AdminUpdate) -> Admin:
     """

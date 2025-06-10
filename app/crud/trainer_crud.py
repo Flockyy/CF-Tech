@@ -1,5 +1,5 @@
-from app.schemas.admin_schema import TrainerCreate, TrainerUpdate
-from app.models.admin import Trainer
+from app.schemas.trainer_schema import TrainerCreate, TrainerUpdate
+from app.models.trainer import Trainer
 from typing import Optional
 from sqlmodel import Session
 
@@ -21,6 +21,11 @@ def get_trainer(session: Session, trainer_id: str) -> Optional[Trainer]:
     """
     return session.get(Trainer, trainer_id)
 
+def get_all_trainers(session: Session) -> list[Trainer]:
+    """
+    Retrieve all trainers from the database.
+    """
+    return session.exec(Trainer.select()).all()
 
 def update_trainer(
     session: Session, trainer_id: str, trainer_update: TrainerUpdate

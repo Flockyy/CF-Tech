@@ -60,3 +60,11 @@ def delete_trainer(*, session: SessionDep, trainer_id: str):
     trainer_crud.delete_trainer(session=session, trainer_id=trainer_id)
 
     return {"detail": "Trainer deleted successfully"}
+
+@router.get("/", response_model=list[TrainerPublic])
+def list_trainers(*, session: SessionDep):
+    """
+    List all trainers.
+    """
+    trainers = trainer_crud.get_all_trainers(session=session)
+    return trainers

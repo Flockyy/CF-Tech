@@ -1,7 +1,8 @@
 from pydantic import BaseModel, Field
+from app.models.user import User
 from app.schemas.user_schema import UserCreate, UserUpdate
 from typing import Optional
-
+import uuid
 
 class TrainerCreate(UserCreate, BaseModel):
     """
@@ -23,3 +24,6 @@ class TrainerUpdate(UserUpdate, BaseModel):
     specialty: Optional[str] = Field(default=None, max_length=100)
     hourly_rate: Optional[float] = Field(default=None, ge=0)
     bio: Optional[str] = Field(default=None, max_length=500)
+
+class TrainerPublic(User):
+    id: uuid.UUID
