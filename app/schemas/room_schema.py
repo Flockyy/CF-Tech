@@ -42,14 +42,21 @@ def test():
     room1_db = RoomBase(
         name="A101", location="Building North, 1st floor", capacity=15
     )
+    room2 = ClassroomCreate(
+        name="A102", location="Building North, 1st floor", capacity=30
+    )
+    print(room2)
+    room2_db = RoomBase(
+        name="A102", location="Building North, 1st floor", capacity=30
+    )
     equipment1 = EquipmentCreate(name="Welcome desk")
     print(equipment1)
     equipment2 = RegisteredEquipmentCreate(name="TV", serial_number="aU1854Eqd4")
     print(equipment2)
-    equipment3 = InRoomEquipmentCreate(name="TV", room=room1_db)
+    equipment3 = InRoomEquipmentCreate(name="TV", rooms=[room1_db, room2_db])
     print(equipment3)
     equipment4 = InRoomRegisteredEquipmentCreate(
-        name="TV", room=room1_db, serial_number="aU1854Eqd4"
+        name="TV", rooms=[room1_db], serial_number="aU1854Eqd4"
     )
     print(equipment4)
 
