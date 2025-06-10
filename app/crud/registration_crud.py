@@ -1,4 +1,5 @@
-import os, sys
+import os
+import sys
 
 sys.path.append(os.getcwd())
 from sqlmodel import Session, create_engine, SQLModel
