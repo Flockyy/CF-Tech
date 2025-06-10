@@ -1,13 +1,29 @@
-import os
+import os, sys
 from logging.config import fileConfig
 
 from sqlalchemy import engine_from_config
 from sqlalchemy import pool
+import sqlalchemy.dialects
 
 from alembic import context
 
 from dotenv import load_dotenv
+from sqlmodel import SQLModel
 
+from app.models.admin import Admin
+from app.models.staff import Staff
+from app.models.trainee import Trainee
+from app.models.trainer import Trainer
+from app.models.attendance import AttendanceBase
+from app.models.course import CourseBase
+from app.models.duty import Duty
+from app.models.registration import RegistrationBase
+from app.models.room import RoomBase, EquipmentBase, RoomEquipmentLink
+
+
+sys.path.insert(
+    0, os.path.realpath(os.path.join(os.path.dirname(__file__), ".."))
+)  # Add project root to sys.path
 
 load_dotenv()
 
@@ -24,7 +40,7 @@ if config.config_file_name is not None:
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
-target_metadata = None
+target_metadata = SQLModel.metadata
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:
@@ -44,14 +60,25 @@ def run_migrations_offline() -> None:
     script output.
 
     """
-    # url = config.get_main_option("sqlalchemy.url")
-    url = config.get_main_option(os.getenv("DATABASE_URL"))
+    url = config.get_main_option("sqlalchemy.url")
+    # url = config.get_main_option(datab_url)
     context.configure(
         url=url,
         target_metadata=target_metadata,
         literal_binds=True,
         dialect_opts={"paramstyle": "named"},
+        compare_type=True,
+        naming_convention=naming_convention,
+        render_as_batch=True,
     )
+
+    naming_convention = {
+        "ix": "ix_%(table_name)_%(column_0_label)s",  # Added table_name for more uniqueness
+        "uq": "uq_%(table_name)_%(column_0_name)s",
+        "ck": "ck_%(table_name)_%(constraint_name)s",  # Used constraint_name for check constraints
+        "fk": "fk_%(table_name)_%(column_0_name)s_%(referred_table_name)s",
+        "pk": "pk_%(table_name)",
+    }
 
     with context.begin_transaction():
         context.run_migrations()
@@ -70,8 +97,22 @@ def run_migrations_online() -> None:
         poolclass=pool.NullPool,
     )
 
+    naming_convention = {
+        "ix": "ix_%(table_name)_%(column_0_label)s",  # Added table_name for more uniqueness
+        "uq": "uq_%(table_name)_%(column_0_name)s",
+        "ck": "ck_%(table_name)_%(constraint_name)s",  # Used constraint_name for check constraints
+        "fk": "fk_%(table_name)_%(column_0_name)s_%(referred_table_name)s",
+        "pk": "pk_%(table_name)",
+    }
+
     with connectable.connect() as connection:
-        context.configure(connection=connection, target_metadata=target_metadata)
+        context.configure(
+            connection=connection,
+            target_metadata=target_metadata,
+            compare_type=True,
+            naming_convention=naming_convention,
+            render_as_batch=True,
+        )
 
         with context.begin_transaction():
             context.run_migrations()
