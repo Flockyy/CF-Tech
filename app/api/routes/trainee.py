@@ -5,6 +5,7 @@ from app.crud import trainee_crud
 
 router = APIRouter(prefix="/trainees", tags=["trainees"])
 
+
 @router.post("/", response_model=TraineePublic)
 def create_trainee(*, session: SessionDep, trainee_in: TraineeCreate):
     """
@@ -33,6 +34,7 @@ def get_trainee(*, session: SessionDep, trainee_id: str):
 
     return trainee
 
+
 @router.put("/{trainee_id}", response_model=TraineePublic)
 def update_trainee(*, session: SessionDep, trainee_id: str, trainee_in: TraineeCreate):
     """
@@ -47,6 +49,7 @@ def update_trainee(*, session: SessionDep, trainee_id: str, trainee_in: TraineeC
     )
 
     return updated_trainee
+
 
 @router.delete("/{trainee_id}", response_model=dict)
 def delete_trainee(*, session: SessionDep, trainee_id: str):

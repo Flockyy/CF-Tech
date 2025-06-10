@@ -55,6 +55,7 @@ def delete_trainee(session: Session, trainee_id: str) -> None:
     session.delete(db_trainee)
     session.commit()
 
+
 def get_trainee_by_email(session: Session, email: str) -> Trainee:
     """
     Retrieve a trainee by their email from the database.

@@ -8,7 +8,7 @@ from app.schemas.room_schema import (
     EquipmentCreate,
     RegisteredEquipmentCreate,
     InRoomEquipmentCreate,
-    InRoomRegisteredEquipmentCreate
+    InRoomRegisteredEquipmentCreate,
 )
 
 
@@ -78,13 +78,14 @@ def test():
     equipment2 = RegisteredEquipmentCreate(name="Computer", serial_number="aU1854Eqd4")
     print(equipment2)
 
-
     with Session(engine) as session:
         room_db = create_classroom(session, room)
 
         equipment3 = InRoomEquipmentCreate(name="White board", id_room=room_db.id)
         print(equipment3)
-        equipment4 = InRoomRegisteredEquipmentCreate(name="TV", id_room=room_db.id, serial_number="yU1854Eqd5")
+        equipment4 = InRoomRegisteredEquipmentCreate(
+            name="TV", id_room=room_db.id, serial_number="yU1854Eqd5"
+        )
         print(equipment4)
 
         equipment_db = create_equipment(session, equipment1)

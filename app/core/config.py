@@ -21,7 +21,6 @@ def parse_cors(v: Any) -> list[str] | str:
 
 
 class Settings(BaseSettings):
-    
     model_config = SettingsConfigDict(
         # Use top level .env file (one level above ./backend/)
         env_file="../.env",
@@ -34,8 +33,7 @@ class Settings(BaseSettings):
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 8
     FRONTEND_HOST: str = "http://localhost:5173"
     ENVIRONMENT: Literal["local", "staging", "production"] = "local"
-    
-    
+
     BACKEND_CORS_ORIGINS: Annotated[
         list[AnyUrl] | str, BeforeValidator(parse_cors)
     ] = []
@@ -68,5 +66,6 @@ class Settings(BaseSettings):
         )
 
     SQLITE_DB: str = "sqlite:///./app.db"
+
 
 settings = Settings()  # type: ignore

@@ -38,11 +38,13 @@ class EquipmentBase(SQLModel, table=True):
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
     id_room: uuid.UUID | None = Field(default=None, foreign_key="rooms.id")
     name: str = Field(..., unique=True, min_length=2, max_length=50)
-    serial_number: str | None = Field(default=None, unique=True, min_length=2, max_length=50)
+    serial_number: str | None = Field(
+        default=None, unique=True, min_length=2, max_length=50
+    )
+
 
 # TODO: many-to-many relationship with equipment
 #    rooms: list["Room"] = Relationship(back_populates="rooms", link_model=RoomEquipmentLink)
-
 
 
 def test():
