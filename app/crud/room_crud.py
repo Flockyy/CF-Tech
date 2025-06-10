@@ -8,11 +8,13 @@ from app.schemas.room_schema import (
     EquipmentCreate,
     RegisteredEquipmentCreate,
     InRoomEquipmentCreate,
-    InRoomRegisteredEquipmentCreate
+    InRoomRegisteredEquipmentCreate,
 )
 
 
-def create_classroom(db: Session, room_in: ClassroomCreate) -> RoomBase:
+def create_classroom(
+    room_in: ClassroomCreate, add_to_db: bool = True, db: Session | None = None
+) -> RoomBase:
     """Insert an entity in the table rooms of the database connected as 'db',
     based on the object 'room_in'. 'room_in' is already filtered on the pydantic
     rules set-up in the class ClassroomCreate.
@@ -27,9 +29,10 @@ def create_classroom(db: Session, room_in: ClassroomCreate) -> RoomBase:
     room_db = RoomBase(
         name=room_in.name, capacity=room_in.capacity, location=room_in.location
     )
-    db.add(room_db)
-    db.commit()
-    db.refresh(room_db)
+    if add_to_db and db:
+        db.add(room_db)
+        db.commit()
+        db.refresh(room_db)
 
     return room_db
 
@@ -50,7 +53,7 @@ def create_equipment(db: Session, equipment_in: EquipmentCreate) -> EquipmentBas
     if isinstance(equipment_in, RegisteredEquipmentCreate):
         params["serial_number"] = equipment_in.serial_number
     if isinstance(equipment_in, InRoomEquipmentCreate):
-        params["id_room"] = equipment_in.id_room
+        params["room"] = equipment_in.room
 
     equipment_db = EquipmentBase(**params)
     db.add(equipment_db)
@@ -73,20 +76,20 @@ def test():
         name="A101", capacity=18, location="Building North, 1st floor"
     )
     print(room)
+    room_db = create_classroom(room, add_to_db=False)
+
     equipment1 = EquipmentCreate(name="Welcome desk")
     print(equipment1)
     equipment2 = RegisteredEquipmentCreate(name="Computer", serial_number="aU1854Eqd4")
     print(equipment2)
-
+    equipment3 = InRoomEquipmentCreate(name="White board", room=room_db)
+    print(equipment3)
+    equipment4 = InRoomRegisteredEquipmentCreate(
+        name="TV", room=room_db, serial_number="yU1854Eqd5"
+    )
+    print(equipment4)
 
     with Session(engine) as session:
-        room_db = create_classroom(session, room)
-
-        equipment3 = InRoomEquipmentCreate(name="White board", id_room=room_db.id)
-        print(equipment3)
-        equipment4 = InRoomRegisteredEquipmentCreate(name="TV", id_room=room_db.id, serial_number="yU1854Eqd5")
-        print(equipment4)
-
         equipment_db = create_equipment(session, equipment1)
         equipment_db = create_equipment(session, equipment2)
         equipment_db = create_equipment(session, equipment3)
