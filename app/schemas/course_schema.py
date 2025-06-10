@@ -3,12 +3,7 @@ import uuid
 from pydantic import BaseModel, Field, model_validator
 from datetime import date
 import enum
-
-
-class CourseStatus(str, enum.Enum):
-    open = "OPEN"
-    closed = "CLOSED"
-    archived = "ARCHIVED"
+from app.models.course import CourseStatus
 
 
 # Properties to receive via API on creation
