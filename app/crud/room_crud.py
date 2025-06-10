@@ -57,7 +57,7 @@ def create_equipment(
     if isinstance(equipment_in, RegisteredEquipmentCreate):
         params["serial_number"] = equipment_in.serial_number
     if isinstance(equipment_in, InRoomEquipmentCreate):
-        params["room"] = equipment_in.room
+        params["rooms"] = equipment_in.rooms
 
     equipment_db = EquipmentBase(**params)
     if add_to_db and db:
@@ -77,20 +77,31 @@ def test():
     engine = create_engine(sqlite_url, echo=True)
     SQLModel.metadata.create_all(engine)
 
-    room = ClassroomCreate(
+    # Create 3 rooms (but do not push them yet in the database)
+    room1 = ClassroomCreate(
         name="A101", capacity=18, location="Building North, 1st floor"
     )
-    print(room)
-    room_db = create_classroom(room)
+    print(room1)
+    room1_db = create_classroom(room1)
+    room2 = ClassroomCreate(
+        name="A102", capacity=36, location="Building North, 1st floor"
+    )
+    print(room2)
+    room2_db = create_classroom(room2)
+    room3 = ClassroomCreate(
+        name="A103", capacity=18, location="Building North, 1st floor"
+    )
+    print(room3)
+    room3_db = create_classroom(room3)
 
     equipment1 = EquipmentCreate(name="Welcome desk")
     print(equipment1)
     equipment2 = RegisteredEquipmentCreate(name="Computer", serial_number="aU1854Eqd4")
     print(equipment2)
-    equipment3 = InRoomEquipmentCreate(name="White board", room=room_db)
+    equipment3 = InRoomEquipmentCreate(name="White board", rooms=[room1_db, room2_db, room3_db])
     print(equipment3)
     equipment4 = InRoomRegisteredEquipmentCreate(
-        name="TV", room=room_db, serial_number="yU1854Eqd5"
+        name="TV", rooms=[room2_db], serial_number="yU1854Eqd5"
     )
     print(equipment4)
 

@@ -27,7 +27,7 @@ class RegisteredEquipmentCreate(EquipmentCreate):
 
 
 class InRoomEquipmentCreate(EquipmentCreate):
-    room: RoomBase = Field(...)
+    rooms: list[RoomBase] = Field(...)
 
 
 class InRoomRegisteredEquipmentCreate(RegisteredEquipmentCreate, InRoomEquipmentCreate):
