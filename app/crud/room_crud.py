@@ -13,15 +13,16 @@ from app.schemas.room_schema import (
 
 
 def create_classroom(
-    room_in: ClassroomCreate, add_to_db: bool = True, db: Session | None = None
+    room_in: ClassroomCreate, add_to_db: bool = False, db: Session | None = None
 ) -> RoomBase:
     """Insert an entity in the table rooms of the database connected as 'db',
     based on the object 'room_in'. 'room_in' is already filtered on the pydantic
     rules set-up in the class ClassroomCreate.
 
     Args:
+        room_in (ClassroomCreate): The classroom to insert respecting the pydantic rules set-up in the class ClassroomCreate.
+        add_to_db (bool): Should the classroom be already added to the database ? If False, means that if will be added via a relationship.
         db (Session): The session connected to the database
-        room_in (ClassroomCreate): The classroom to instert respecting the pydantic rules set-up in the class ClassroomCreate.
 
     Returns:
         RoomBase: The content of the entry in the database.
@@ -37,14 +38,17 @@ def create_classroom(
     return room_db
 
 
-def create_equipment(db: Session, equipment_in: EquipmentCreate) -> EquipmentBase:
+def create_equipment(
+    equipment_in: EquipmentCreate, add_to_db: bool = False, db: Session | None = None
+) -> EquipmentBase:
     """Insert an entity in the table equipments of the database connected as 'db',
     based on the object 'equipment_in'. 'equipment_in' is already filtered on the pydantic
     rules set-up in the class EquipmentCreate.
 
     Args:
+        equipment_in (EquipmentCreate): The equipment to insert respecting the pydantic rules set-up in the class EquipmentCreate.
+        add_to_db (bool): Should the equipment be already added to the database ? If False, means that if will be added via a relationship.
         db (Session): The session connected to the database
-        equipment_in (ClassroomCreate): The classroom to instert respecting the pydantic rules set-up in the class ClassroomCreate.
 
     Returns:
         RoomBase: The content of the entry in the database.
@@ -56,9 +60,10 @@ def create_equipment(db: Session, equipment_in: EquipmentCreate) -> EquipmentBas
         params["room"] = equipment_in.room
 
     equipment_db = EquipmentBase(**params)
-    db.add(equipment_db)
-    db.commit()
-    db.refresh(equipment_db)
+    if add_to_db and db:
+        db.add(equipment_db)
+        db.commit()
+        db.refresh(equipment_db)
 
     return equipment_db
 
@@ -76,7 +81,7 @@ def test():
         name="A101", capacity=18, location="Building North, 1st floor"
     )
     print(room)
-    room_db = create_classroom(room, add_to_db=False)
+    room_db = create_classroom(room)
 
     equipment1 = EquipmentCreate(name="Welcome desk")
     print(equipment1)
@@ -90,10 +95,10 @@ def test():
     print(equipment4)
 
     with Session(engine) as session:
-        equipment_db = create_equipment(session, equipment1)
-        equipment_db = create_equipment(session, equipment2)
-        equipment_db = create_equipment(session, equipment3)
-        equipment_db = create_equipment(session, equipment4)
+        equipment_db = create_equipment(equipment1, True, session)
+        equipment_db = create_equipment(equipment2, True, session)
+        equipment_db = create_equipment(equipment3, True, session)
+        equipment_db = create_equipment(equipment4, True, session)
 
 
 if __name__ == "__main__":
