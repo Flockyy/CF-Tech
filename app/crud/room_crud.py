@@ -1,7 +1,7 @@
 import os, sys
 
 sys.path.append(os.getcwd())
-from sqlmodel import Session, create_engine, SQLModel
+from sqlmodel import Session, create_engine, SQLModel, select
 from app.models.room import RoomBase, EquipmentBase
 from app.schemas.room_schema import (
     ClassroomCreate,
@@ -36,6 +36,16 @@ def create_classroom(
         db.refresh(room_db)
 
     return room_db
+
+
+def select_all_rooms(db: Session, name: str | None = None):
+    if name:
+        statement = select(RoomBase).where(RoomBase.name == name)
+    else:
+        statement = select(RoomBase)
+
+    classrooms = db.exec(statement).all()
+    return classrooms
 
 
 def create_equipment(
@@ -98,7 +108,9 @@ def test():
     print(equipment1)
     equipment2 = RegisteredEquipmentCreate(name="Computer", serial_number="aU1854Eqd4")
     print(equipment2)
-    equipment3 = InRoomEquipmentCreate(name="White board", rooms=[room1_db, room2_db, room3_db])
+    equipment3 = InRoomEquipmentCreate(
+        name="White board", rooms=[room1_db, room2_db, room3_db]
+    )
     print(equipment3)
     equipment4 = InRoomRegisteredEquipmentCreate(
         name="TV", rooms=[room2_db], serial_number="yU1854Eqd5"
@@ -110,6 +122,10 @@ def test():
         equipment_db = create_equipment(equipment2, True, session)
         equipment_db = create_equipment(equipment3, True, session)
         equipment_db = create_equipment(equipment4, True, session)
+
+        rooms = select_all_rooms(session)
+        for room in rooms:
+            print(room)
 
 
 if __name__ == "__main__":
