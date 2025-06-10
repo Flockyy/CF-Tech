@@ -29,6 +29,7 @@ class RoomBase(SQLModel, table=True):
     location: str = Field(..., min_length=2, max_length=50)
     capacity: int | None = Field(default=None, ge=1)
     is_active: bool = Field(default=True)
+    color: str = Field(default="white", sa_column_kwargs={"server_default": "white"})
 
     equipments: list["EquipmentBase"] = Relationship(
         back_populates="rooms", link_model=RoomEquipmentLink
@@ -67,7 +68,12 @@ def test():
     )
     print(link1)
 
-    room2 = RoomBase(name="A102", location="Building North, 1st floor", capacity=36, equipments=[equipment1, equipment2])
+    room2 = RoomBase(
+        name="A102",
+        location="Building North, 1st floor",
+        capacity=36,
+        equipments=[equipment1, equipment2],
+    )
     print(room2)
     equipment3 = EquipmentBase(name="White board", rooms=[room1])
     print(equipment3)
