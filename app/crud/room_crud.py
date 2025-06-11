@@ -58,7 +58,7 @@ def get_room(db: Session, room_id: UUID) -> RoomBase:
     return room_db
 
 
-def select_all_rooms(db: Session) -> Sequence[RoomBase]:
+def select_all_rooms(db: Session) -> list[RoomBase]:
     """Select all rooms in the database and return them in a list.
 
     Args:
@@ -168,6 +168,9 @@ def test():
         print(room)
         print(room.equipments)
 
+        room_bis = get_room(session, room.id)
+        print(room_bis)
+        print(room_bis.equipments)
 
 if __name__ == "__main__":
     test()
