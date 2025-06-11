@@ -65,7 +65,7 @@ def select_all_rooms(db: Session) -> list[RoomBase]:
         db (Session): The session connected to the database
 
     Returns:
-        list[RoomBase]: The list of rooms with their equipments 
+        list[RoomBase]: The list of rooms with their equipments
     """
     rooms_db = db.exec(select(RoomBase)).all()
     return rooms_db
@@ -141,7 +141,7 @@ def select_all_equipments(db: Session) -> list[EquipmentBase]:
         db (Session): The session connected to the database
 
     Returns:
-        list[EquipmentBase]: The list of equipments with their associated rooms 
+        list[EquipmentBase]: The list of equipments with their associated rooms
     """
     equipments_db = db.exec(select(EquipmentBase)).all()
     return equipments_db
@@ -157,7 +157,9 @@ def select_equipment(db: Session, name: str) -> EquipmentBase:
     Returns:
         EquipmentBase: The equipment and its associated rooms
     """
-    equipment_db = db.exec(select(EquipmentBase).where(EquipmentBase.name == name)).one()
+    equipment_db = db.exec(
+        select(EquipmentBase).where(EquipmentBase.name == name)
+    ).one()
     return equipment_db
 
 
@@ -229,6 +231,7 @@ def test():
         equipment_bis = get_room(session, room.id)
         print(equipment_bis)
         print(equipment_bis.equipments)
+
 
 if __name__ == "__main__":
     test()

@@ -11,12 +11,11 @@ from dotenv import load_dotenv
 from sqlmodel import SQLModel
 
 from app.models.admin import Admin
-from app.models.staff import Staff
+from app.models.staff import Staff, Duty, DutyStaffLink
 from app.models.trainee import Trainee
 from app.models.trainer import Trainer
 from app.models.attendance import AttendanceBase
 from app.models.course import CourseBase
-from app.models.duty import Duty
 from app.models.registration import RegistrationBase
 from app.models.room import RoomBase, EquipmentBase, RoomEquipmentLink
 

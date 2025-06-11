@@ -5,8 +5,14 @@ import uuid
 
 
 def create_admin(session: Session, admin: AdminCreate) -> Admin:
-    """
-    Create a new admin in the database.
+    """Create a new admin in the database.
+
+    Args:
+        session (Session): The database session.
+        admin (AdminCreate): The admin data to create.
+
+    Returns:
+        Admin: The created admin.
     """
 
     db_admin = Admin.model_validate(admin)
@@ -19,29 +25,52 @@ def create_admin(session: Session, admin: AdminCreate) -> Admin:
 def get_admin(session: Session, admin_id: uuid.UUID) -> Admin:
     """
     Retrieve an admin by ID from the database.
+    Args:
+        session (Session): The database session.
+        admin_id (uuid.UUID): The ID of the admin to retrieve.
+    Returns:
+        Admin: The admin object if found, otherwise None.
     """
+
     return session.get(Admin, admin_id)
 
 
 def get_all_admins(session: Session) -> list[Admin]:
     """
     Retrieve all admins from the database.
+    Args:
+        session (Session): The database session.
+    Returns:
+        list[Admin]: A list of all admin objects.
     """
     statement = select(Admin)
     return session.exec(statement).all()
 
+
 def get_admin_by_email(session: Session, email: str) -> Admin:
     """
     Retrieve an admin by email from the database.
+    Args:
+        session (Session): The database session.
+        email (str): The email of the admin to retrieve.
+    Returns:
+        Admin: The admin object if found, otherwise None.
     """
     statement = select(Admin).where(Admin.email == email)
     return session.exec(statement).first()
+
 
 def update_admin(
     session: Session, admin_id: uuid.UUID, admin_update: AdminUpdate
 ) -> Admin:
     """
     Update an existing admin in the database.
+    Args:
+        session (Session): The database session.
+        admin_id (uuid.UUID): The ID of the admin to update.
+        admin_update (AdminUpdate): The data to update the admin with.
+    Returns:
+        Admin: The updated admin object if successful, otherwise None.
     """
     db_admin = session.get(Admin, admin_id)
     if not db_admin:
@@ -58,6 +87,11 @@ def update_admin(
 def delete_admin(session, admin_id: uuid.UUID) -> bool:
     """
     Delete an admin from the database.
+    Args:
+        session (Session): The database session.
+        admin_id (uuid.UUID): The ID of the admin to delete.
+    Returns:
+        bool: True if the admin was deleted successfully, otherwise False.
     """
     db_admin = session.get(Admin, admin_id)
     if not db_admin:
