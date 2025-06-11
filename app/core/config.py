@@ -23,7 +23,6 @@ def parse_cors(v: Any) -> list[str] | str:
 
 
 class Settings(BaseSettings):
-    FIRST_SUPERUSER: str = "admin@example.com"
     model_config = SettingsConfigDict(
         # Use top level .env file (one level above ./backend/)
         env_file="../.env",
@@ -74,8 +73,8 @@ class Settings(BaseSettings):
     """
 
     load_dotenv()
-    DATABASE_URL = os.getenv("DATABASE_URL")
-    DB_ADMIN_EMAIL = os.getenv("DB_ADMIN_EMAIL")
+    DATABASE_URL: str = os.getenv("DATABASE_URL")
+    DB_ADMIN_EMAIL: str = os.getenv("DB_ADMIN_EMAIL")
 
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
 

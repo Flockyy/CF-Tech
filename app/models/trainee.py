@@ -17,4 +17,6 @@ class Trainee(User, table=True):
     phone_number: Optional[str] = Field(
         ..., regex=r"^(?:\+33|0)[1-9](?:[ .-]?\d{2}){4}$"
     )
-    registration_date: datetime = Field(default_factory=datetime.now(timezone.utc))
+    registration_date: datetime = Field(
+        default_factory=lambda: datetime.now(timezone.utc)
+    )

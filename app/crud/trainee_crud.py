@@ -1,16 +1,13 @@
 from app.models.trainee import Trainee
 from app.schemas.trainee_schema import TraineeCreate, TraineeUpdate
 from sqlmodel import Session, select
+import uuid
 
 
 def create_trainee(session: Session, trainee: TraineeCreate) -> Trainee:
     """
     Create a new trainee in the database.
     """
-    print(f"Type of trainee_in: {type(trainee)}")
-    print(
-        f"Content of trainee_in: {trainee.model_dump()}"
-    )  # Use model_dump() for Pydantic models
 
     db_trainee = Trainee.model_validate(trainee)
     session.add(db_trainee)
@@ -19,7 +16,7 @@ def create_trainee(session: Session, trainee: TraineeCreate) -> Trainee:
     return db_trainee
 
 
-def get_trainee(session: Session, trainee_id: str) -> Trainee:
+def get_trainee(session: Session, trainee_id: uuid.UUID) -> Trainee:
     """
     Retrieve a trainee by their ID from the database.
     """
@@ -38,7 +35,7 @@ def get_all_trainees(session: Session) -> list[Trainee]:
 
 
 def update_trainee(
-    session: Session, trainee_id: str, trainee_update: TraineeUpdate
+    session: Session, trainee_id: uuid.UUID, trainee_update: TraineeUpdate
 ) -> Trainee:
     """
     Update an existing trainee in the database.
@@ -57,7 +54,7 @@ def update_trainee(
     return db_trainee
 
 
-def delete_trainee(session: Session, trainee_id: str) -> None:
+def delete_trainee(session: Session, trainee_id: uuid.UUID) -> None:
     """
     Delete a trainee from the database.
     """
@@ -75,6 +72,4 @@ def get_trainee_by_email(session: Session, email: str) -> Trainee:
     """
     statement = select(Trainee).where(Trainee.email == email)
     result = session.exec(statement).first()
-    # if not result:
-    #     raise ValueError("Trainee with this email not found")
     return result

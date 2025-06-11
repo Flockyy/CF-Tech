@@ -2,6 +2,8 @@ from fastapi import APIRouter, HTTPException
 from app.api.deps import SessionDep
 from app.schemas.staff_schema import StaffCreate, StaffPublic
 from app.crud import staff_crud
+import uuid
+
 
 router = APIRouter(prefix="/staff", tags=["staff"])
 
@@ -18,13 +20,13 @@ def create_staff(*, session: SessionDep, staff_in: StaffCreate):
             detail="The staff member with this email already exists in the system.",
         )
 
-    staff = staff_crud.create_staff(session=session, staff_create=staff_in)
+    staff = staff_crud.create_staff(session=session, staff=staff_in)
 
     return staff
 
 
 @router.get("/{staff_id}", response_model=StaffPublic)
-def get_staff(*, session: SessionDep, staff_id: str):
+def get_staff(*, session: SessionDep, staff_id: uuid.UUID):
     """
     Get a staff member by ID.
     """
@@ -36,7 +38,7 @@ def get_staff(*, session: SessionDep, staff_id: str):
 
 
 @router.put("/{staff_id}", response_model=StaffPublic)
-def update_staff(*, session: SessionDep, staff_id: str, staff_in: StaffCreate):
+def update_staff(*, session: SessionDep, staff_id: uuid.UUID, staff_in: StaffCreate):
     """
     Update a staff member by ID.
     """
@@ -52,7 +54,7 @@ def update_staff(*, session: SessionDep, staff_id: str, staff_in: StaffCreate):
 
 
 @router.delete("/{staff_id}", response_model=dict)
-def delete_staff(*, session: SessionDep, staff_id: str):
+def delete_staff(*, session: SessionDep, staff_id: uuid.UUID):
     """
     Delete a staff member by ID.
     """

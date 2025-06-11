@@ -2,6 +2,7 @@ from fastapi import APIRouter, HTTPException
 from app.api.deps import SessionDep
 from app.schemas.trainee_schema import TraineeCreate, TraineePublic
 from app.crud import trainee_crud
+import uuid
 
 router = APIRouter(prefix="/trainees", tags=["trainees"])
 
@@ -24,7 +25,7 @@ def create_trainee(*, session: SessionDep, trainee_in: TraineeCreate):
 
 
 @router.get("/{trainee_id}", response_model=TraineePublic)
-def get_trainee(*, session: SessionDep, trainee_id: str):
+def get_trainee(*, session: SessionDep, trainee_id: uuid.UUID):
     """
     Get a trainee by ID.
     """
@@ -36,7 +37,9 @@ def get_trainee(*, session: SessionDep, trainee_id: str):
 
 
 @router.put("/{trainee_id}", response_model=TraineePublic)
-def update_trainee(*, session: SessionDep, trainee_id: str, trainee_in: TraineeCreate):
+def update_trainee(
+    *, session: SessionDep, trainee_id: uuid.UUID, trainee_in: TraineeCreate
+):
     """
     Update a trainee by ID.
     """
@@ -52,7 +55,7 @@ def update_trainee(*, session: SessionDep, trainee_id: str, trainee_in: TraineeC
 
 
 @router.delete("/{trainee_id}", response_model=dict)
-def delete_trainee(*, session: SessionDep, trainee_id: str):
+def delete_trainee(*, session: SessionDep, trainee_id: uuid.UUID):
     """
     Delete a trainee by ID.
     """

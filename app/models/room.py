@@ -55,6 +55,7 @@ class EquipmentBase(SQLModel, table=True):
         back_populates="equipments", link_model=RoomEquipmentLink
     )
 
+
 def test():
     room1 = RoomBase(name="A101", location="Building North, 1st floor", capacity=12)
     print(room1)

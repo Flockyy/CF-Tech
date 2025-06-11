@@ -2,6 +2,8 @@ from fastapi import APIRouter, HTTPException
 from app.api.deps import SessionDep
 from app.schemas.admin_schema import AdminCreate, AdminPublic
 from app.crud import admin_crud
+import uuid
+
 
 router = APIRouter(prefix="/admin", tags=["admin"])
 
@@ -18,13 +20,13 @@ def create_admin(*, session: SessionDep, admin_in: AdminCreate):
             detail="The admin with this email already exists in the system.",
         )
 
-    admin = admin_crud.create_admin(session=session, admin_create=admin_in)
+    admin = admin_crud.create_admin(session=session, admin=admin_in)
 
     return admin
 
 
 @router.get("/{admin_id}", response_model=AdminPublic)
-def get_admin(*, session: SessionDep, admin_id: str):
+def get_admin(*, session: SessionDep, admin_id: uuid.UUID):
     """
     Get an admin by ID.
     """
@@ -36,7 +38,7 @@ def get_admin(*, session: SessionDep, admin_id: str):
 
 
 @router.put("/{admin_id}", response_model=AdminPublic)
-def update_admin(*, session: SessionDep, admin_id: str, admin_in: AdminCreate):
+def update_admin(*, session: SessionDep, admin_id: uuid.UUID, admin_in: AdminCreate):
     """
     Update an admin by ID.
     """
@@ -52,7 +54,7 @@ def update_admin(*, session: SessionDep, admin_id: str, admin_in: AdminCreate):
 
 
 @router.delete("/{admin_id}", response_model=dict)
-def delete_admin(*, session: SessionDep, admin_id: str):
+def delete_admin(*, session: SessionDep, admin_id: uuid.UUID):
     """
     Delete an admin by ID.
     """

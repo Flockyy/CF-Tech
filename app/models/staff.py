@@ -12,4 +12,4 @@ class Staff(User, table=True):
     __tablename__ = "staff"
 
     position: str = Field(..., max_length=100)  # e.g., "Administrator", "Manager"
-    hire_date: datetime = Field(default_factory=datetime.now(timezone.utc))
+    hire_date: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))

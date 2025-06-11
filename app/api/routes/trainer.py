@@ -2,6 +2,7 @@ from fastapi import APIRouter, HTTPException
 from app.api.deps import SessionDep
 from app.schemas.trainer_schema import TrainerCreate, TrainerPublic
 from app.crud import trainer_crud
+import uuid
 
 router = APIRouter(prefix="/trainers", tags=["trainers"])
 
@@ -18,13 +19,13 @@ def create_trainer(*, session: SessionDep, trainer_in: TrainerCreate):
             detail="The trainer with this email already exists in the system.",
         )
 
-    trainer = trainer_crud.create_trainer(session=session, trainer_create=trainer_in)
+    trainer = trainer_crud.create_trainer(session=session, trainer=trainer_in)
 
     return trainer
 
 
 @router.get("/{trainer_id}", response_model=TrainerPublic)
-def get_trainer(*, session: SessionDep, trainer_id: str):
+def get_trainer(*, session: SessionDep, trainer_id: uuid.UUID):
     """
     Get a trainer by ID.
     """
@@ -36,7 +37,9 @@ def get_trainer(*, session: SessionDep, trainer_id: str):
 
 
 @router.put("/{trainer_id}", response_model=TrainerPublic)
-def update_trainer(*, session: SessionDep, trainer_id: str, trainer_in: TrainerCreate):
+def update_trainer(
+    *, session: SessionDep, trainer_id: uuid.UUID, trainer_in: TrainerCreate
+):
     """
     Update a trainer by ID.
     """
@@ -52,7 +55,7 @@ def update_trainer(*, session: SessionDep, trainer_id: str, trainer_in: TrainerC
 
 
 @router.delete("/{trainer_id}", response_model=dict)
-def delete_trainer(*, session: SessionDep, trainer_id: str):
+def delete_trainer(*, session: SessionDep, trainer_id: uuid.UUID):
     """
     Delete a trainer by ID.
     """

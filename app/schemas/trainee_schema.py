@@ -20,7 +20,9 @@ class TraineeCreate(UserCreate, BaseModel):
     phone_number: Optional[str] = Field(
         ..., pattern=r"^(?:\+33|0)[1-9](?:[ .-]?\d{2}){4}$"
     )
-    registration_date: datetime = Field(default_factory=datetime.now)
+    registration_date: datetime = Field(
+        default_factory=lambda: datetime.now(timezone.utc)
+    )
 
     @field_validator("date_of_birth")
     def is_valid_date_of_birth(cls, value: datetime) -> datetime:
@@ -53,7 +55,7 @@ class TraineeUpdate(UserUpdate, BaseModel):
         """
         Validate that the date of birth is at least 16 years ago.
         """
-        if value and value > datetime.now() - timedelta(days=365 * 16):
+        if value and value > datetime.now(timezone.utc) - timedelta(days=365 * 16):
             raise ValueError("Trainee must be at least 16 years old.")
         return value
 

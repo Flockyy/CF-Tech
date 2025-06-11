@@ -98,7 +98,9 @@ def test():
     print(equipment1)
     equipment2 = RegisteredEquipmentCreate(name="Computer", serial_number="aU1854Eqd4")
     print(equipment2)
-    equipment3 = InRoomEquipmentCreate(name="White board", rooms=[room1_db, room2_db, room3_db])
+    equipment3 = InRoomEquipmentCreate(
+        name="White board", rooms=[room1_db, room2_db, room3_db]
+    )
     print(equipment3)
     equipment4 = InRoomRegisteredEquipmentCreate(
         name="TV", rooms=[room2_db], serial_number="yU1854Eqd5"
