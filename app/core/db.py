@@ -6,7 +6,6 @@ from app.models.user import User
 from app.models.trainer import Trainer
 from app.models.trainee import Trainee
 from app.models.staff import Staff
-from app.models.duty import Duty
 from app.core.config import settings
 
 engine = create_engine(str(settings.SQLITE_DB), echo=True)

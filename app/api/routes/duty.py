@@ -12,11 +12,11 @@ def create_duty(*, session: SessionDep, duty_in: DutyCreate):
     """
     Create a new duty.
     """
-    duty = duty_crud.get_duty_by_name(session=session, name=duty_in.name)
+    duty = duty_crud.get_duty_by_title(session=session, title=duty_in.title)
     if duty:
         raise HTTPException(
             status_code=400,
-            detail="The duty with this name already exists in the system.",
+            detail="The duty with this title already exists in the system.",
         )
 
     duty = duty_crud.create_duty(session=session, duty=duty_in)
@@ -36,7 +36,7 @@ def get_duty(*, session: SessionDep, duty_id: uuid.UUID):
     return duty
 
 
-@router.put("/{duty_id}", response_model=DutyPublic)
+@router.put("/{duty_id}", response_model=dict)
 def update_duty(*, session: SessionDep, duty_id: uuid.UUID, duty_in: DutyCreate):
     """
     Update a duty by ID.
