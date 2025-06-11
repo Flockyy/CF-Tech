@@ -6,6 +6,7 @@ from uuid import UUID
 from app.models.room import RoomBase, EquipmentBase
 from app.schemas.room_schema import (
     ClassroomCreate,
+    ClassroomUpdate,
     EquipmentCreate,
     RegisteredEquipmentCreate,
     InRoomEquipmentCreate,
@@ -58,20 +59,20 @@ def get_room(db: Session, room_id: UUID) -> RoomBase:
     return room_db
 
 
-def select_all_rooms(db: Session) -> list[RoomBase]:
+def get_all_rooms(db: Session) -> list[RoomBase]:
     """Select all rooms in the database and return them in a list.
 
     Args:
         db (Session): The session connected to the database
 
     Returns:
-        list[RoomBase]: The list of rooms with their equipments 
+        list[RoomBase]: The list of rooms with their equipments
     """
     rooms_db = db.exec(select(RoomBase)).all()
     return rooms_db
 
 
-def select_room(db: Session, name: str) -> RoomBase:
+def get_room_by_name(db: Session, name: str) -> RoomBase:
     """Select a room given its name.
 
     Args:
@@ -82,6 +83,71 @@ def select_room(db: Session, name: str) -> RoomBase:
         RoomBase: The room and its equipments
     """
     room_db = db.exec(select(RoomBase).where(RoomBase.name == name)).one()
+    return room_db
+
+
+def update_classroom(
+    db: Session,
+    room_id: UUID,
+    room_update: ClassroomUpdate,
+    apply_update_to_db: bool = False,
+) -> RoomBase:
+    """Update the entity with ID 'room_id' in the table rooms of the database connected as 'db',
+    based on the object 'room_update'. 'room_update' is already filtered on the pydantic
+    rules set-up in the class ClassroomUpdate.
+
+    Args:
+        db (Session): The session connected to the database
+        room_id (UUID): The ID of the room
+        room_update (ClassroomUpdate): The classroom data to consider in the update respecting the pydantic rules set-up in the class ClassroomUpdate.
+        apply_update_to_db (bool): Should the update be already committed to the database ? If False, commit is postponed.
+
+    Returns:
+        RoomBase: The content of the entry in the database after the update.
+    """
+    room_db = get_room(db, room_id)
+    room_data = room_update.model_dump(exclude_unset=True)
+    for key, value in room_data.items():
+        setattr(room_db, key, value)
+
+    db.add(room_db)
+    if apply_update_to_db:
+        db.commit()
+        db.refresh(room_db)
+
+    return room_db
+
+
+def put_equipments_in_classroom(
+    db: Session,
+    room_id: UUID,
+    equipment_ids: list[UUID],
+    apply_update_to_db: bool = False,
+) -> RoomBase:
+    """Associate some equipments with IDs 'equipment_ids' with the entity
+    of the table rooms with ID 'room_id' of the database connected as 'db'.
+    The commit to the database may be postponed using 'apply_update_to_db'.
+
+
+    Args:
+        db (Session): The session connected to the database
+        room_id (UUID): The ID of the classroom
+        equipment_ids (list[UUID]): The list of IDs of the equipments
+        apply_update_to_db (bool): Should the update be already committed to the database ? If False, commit is postponed.
+
+    Returns:
+        RoomBase: The content of the entry in the database.
+    """
+    room_db = get_room(db, room_id)
+    for equipment_id in equipment_ids:
+        equipment_db = get_equipment(db, equipment_id)
+        room_db.equipments.append(equipment_db)
+
+    db.add(room_db)
+    if apply_update_to_db:
+        db.commit()
+        db.refresh(room_db)
+
     return room_db
 
 
@@ -134,20 +200,20 @@ def get_equipment(db: Session, equipment_id: UUID) -> EquipmentBase:
     return equipment_db
 
 
-def select_all_equipments(db: Session) -> list[EquipmentBase]:
+def get_all_equipments(db: Session) -> list[EquipmentBase]:
     """Select all equipments in the database and return them in a list.
 
     Args:
         db (Session): The session connected to the database
 
     Returns:
-        list[EquipmentBase]: The list of equipments with their associated rooms 
+        list[EquipmentBase]: The list of equipments with their associated rooms
     """
     equipments_db = db.exec(select(EquipmentBase)).all()
     return equipments_db
 
 
-def select_equipment(db: Session, name: str) -> EquipmentBase:
+def get_equipment_by_name(db: Session, name: str) -> EquipmentBase:
     """Select an equipment given its name.
 
     Args:
@@ -157,7 +223,9 @@ def select_equipment(db: Session, name: str) -> EquipmentBase:
     Returns:
         EquipmentBase: The equipment and its associated rooms
     """
-    equipment_db = db.exec(select(EquipmentBase).where(EquipmentBase.name == name)).one()
+    equipment_db = db.exec(
+        select(EquipmentBase).where(EquipmentBase.name == name)
+    ).one()
     return equipment_db
 
 
@@ -187,10 +255,21 @@ def test():
     print(room3)
     room3_db = create_classroom(room3)
 
+    # Create 4 equipments
     equipment1 = EquipmentCreate(name="Welcome desk")
     print(equipment1)
-    equipment2 = RegisteredEquipmentCreate(name="Computer", serial_number="aU1854Eqd4")
-    print(equipment2)
+    equipment2_1 = RegisteredEquipmentCreate(
+        name="Computer1", serial_number="aU1854Eqd4"
+    )
+    print(equipment2_1)
+    equipment2_2 = RegisteredEquipmentCreate(
+        name="Computer2", serial_number="54FREZKfNf"
+    )
+    print(equipment2_2)
+    equipment2_3 = RegisteredEquipmentCreate(
+        name="Computer3", serial_number="fre4GR56E8"
+    )
+    print(equipment2_3)
     equipment3 = InRoomEquipmentCreate(
         name="White board", rooms=[room1_db, room2_db, room3_db]
     )
@@ -200,17 +279,21 @@ def test():
     )
     print(equipment4)
 
+    # Push everything in the database
     with Session(engine) as session:
-        equipment_db = create_equipment(equipment1, True, session)
-        equipment_db = create_equipment(equipment2, True, session)
-        equipment_db = create_equipment(equipment3, True, session)
-        equipment_db = create_equipment(equipment4, True, session)
+        create_equipment(equipment1, True, session)
+        create_equipment(equipment2_1, True, session)
+        create_equipment(equipment2_2, True, session)
+        create_equipment(equipment2_3, True, session)
+        create_equipment(equipment3, True, session)
+        create_equipment(equipment4, True, session)
 
-        rooms = select_all_rooms(session)
+        # Select some rooms from the database
+        rooms = get_all_rooms(session)
         for room in rooms:
             print(room)
 
-        room = select_room(session, "A103")
+        room = get_room_by_name(session, "A103")
         print(room)
         print(room.equipments)
 
@@ -218,17 +301,41 @@ def test():
         print(room_bis)
         print(room_bis.equipments)
 
-        equipments = select_all_equipments(session)
+        # Select some equipments from the database
+        equipments = get_all_equipments(session)
         for equipment in equipments:
             print(equipment)
 
-        equipment = select_equipment(session, "White board")
+        equipment = get_equipment_by_name(session, "White board")
         print(equipment)
         print(equipment.rooms)
 
         equipment_bis = get_room(session, room.id)
         print(equipment_bis)
         print(equipment_bis.equipments)
+
+        # Update a room
+        room_db = get_room_by_name(session, "A103")
+        print(room_db)
+        room_update = ClassroomUpdate(capacity=36)
+        room_db = update_classroom(session, room_db.id, room_update)
+        print(room_db)
+        room_update = ClassroomUpdate(name="B209")
+        room_db = update_classroom(session, room_db.id, room_update)
+        print(room_db)
+        room_update = ClassroomUpdate(location="Building B, floor 2")
+        room_db = update_classroom(session, room_db.id, room_update, True)
+        print(room_db)
+
+        # Add equipment to room
+        room_db = get_room_by_name(session, "A102")
+        equipment_ids = []
+        equipment_ids.append(get_equipment_by_name(session, "Computer1").id)
+        equipment_ids.append(get_equipment_by_name(session, "Computer2").id)
+        equipment_ids.append(get_equipment_by_name(session, "Computer3").id)
+        room_db = put_equipments_in_classroom(session, room_db.id, equipment_ids, True)
+        print(room_db)
+
 
 if __name__ == "__main__":
     test()
