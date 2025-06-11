@@ -54,7 +54,7 @@ def get_room(db: Session, room_id: UUID) -> RoomBase:
     """
     room_db = db.get(RoomBase, room_id)
     if not room_db:
-        raise ValueError("Room with ID {} member not found")
+        raise ValueError(f"Room with ID {room_id} not found")
     return room_db
 
 
@@ -115,6 +115,52 @@ def create_equipment(
     return equipment_db
 
 
+def get_equipment(db: Session, equipment_id: UUID) -> EquipmentBase:
+    """Select an equipment in the database given its ID.
+
+    Args:
+        db (Session): The session connected to the database
+        equipment_id (UUID): The equipment ID in the database
+
+    Raises:
+        ValueError: No equipment found with this ID
+
+    Returns:
+        EquipmentBase: The equipment and the associated rooms
+    """
+    equipment_db = db.get(EquipmentBase, equipment_id)
+    if not equipment_db:
+        raise ValueError(f"Equipment with ID {equipment_id} not found")
+    return equipment_db
+
+
+def select_all_equipments(db: Session) -> list[EquipmentBase]:
+    """Select all equipments in the database and return them in a list.
+
+    Args:
+        db (Session): The session connected to the database
+
+    Returns:
+        list[EquipmentBase]: The list of equipments with their associated rooms 
+    """
+    equipments_db = db.exec(select(EquipmentBase)).all()
+    return equipments_db
+
+
+def select_equipment(db: Session, name: str) -> EquipmentBase:
+    """Select an equipment given its name.
+
+    Args:
+        db (Session): The session connected to the database
+        name (str): The name of the equipment
+
+    Returns:
+        EquipmentBase: The equipment and its associated rooms
+    """
+    equipment_db = db.exec(select(EquipmentBase).where(EquipmentBase.name == name)).one()
+    return equipment_db
+
+
 def test():
     """Test the module functions"""
 
@@ -171,6 +217,18 @@ def test():
         room_bis = get_room(session, room.id)
         print(room_bis)
         print(room_bis.equipments)
+
+        equipments = select_all_equipments(session)
+        for equipment in equipments:
+            print(equipment)
+
+        equipment = select_equipment(session, "White board")
+        print(equipment)
+        print(equipment.rooms)
+
+        equipment_bis = get_room(session, room.id)
+        print(equipment_bis)
+        print(equipment_bis.equipments)
 
 if __name__ == "__main__":
     test()
