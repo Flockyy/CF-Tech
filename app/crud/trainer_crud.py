@@ -1,5 +1,5 @@
-from app.schemas.admin_schema import TrainerCreate, TrainerUpdate
-from app.models.admin import Trainer
+from app.schemas.trainer_schema import TrainerCreate, TrainerUpdate
+from app.models.trainer import Trainer
 from typing import Optional
 from sqlmodel import Session
 

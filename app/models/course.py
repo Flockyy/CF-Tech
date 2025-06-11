@@ -24,10 +24,8 @@ class CourseBase(SQLModel, table=True):
     description: Optional[str] = None
     date_start: date = Field(...)
     date_end: date = Field(...)
-    # TODO: add the foreign key constraint
-    room_id: uuid.UUID = Field(...)
-    # TODO: add the foreign key constraint
-    trainer_id: uuid.UUID = Field(...)
+    room_id: uuid.UUID | None = Field(default=None, foreign_key="rooms.id")
+    trainer_id: uuid.UUID | None = Field(default=None, foreign_key="trainers.id")
     max_capacity: int = Field(...)
     status: str = Field(default=CourseStatus.open)
     prerequisite: Optional[str] = None
