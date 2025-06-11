@@ -1,7 +1,7 @@
 from .user import User
 from datetime import datetime
-from typing import Optional
-from sqlmodel import Field
+from typing import List, Optional
+from sqlmodel import Field, Relationship
 
 
 class Trainee(User, table=True):
@@ -18,3 +18,5 @@ class Trainee(User, table=True):
         ..., regex=r"^(?:\+33|0)[1-9](?:[ .-]?\d{2}){4}$"
     )
     registration_date: datetime = Field(default_factory=datetime.now)
+
+    registrations: List["RegistrationBase"] = Relationship(back_populates="trainee")

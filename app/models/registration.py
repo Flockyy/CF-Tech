@@ -1,6 +1,10 @@
+from typing import Optional
 import uuid
-from sqlmodel import Field, SQLModel
+from sqlmodel import Field, Relationship, SQLModel
 from datetime import date
+
+from app.models.course import CourseBase
+from app.models.trainee import Trainee
 
 
 class RegistrationBase(SQLModel, table=True):
@@ -9,15 +13,15 @@ class RegistrationBase(SQLModel, table=True):
     The rules applied here are directly the rules applied to the SQL database.
     """
 
-    __tablename__ = "registration"
+    __tablename__ = "registrations"
 
-    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
-    # TODO: add the foreign key constraint
-    trainee_id: uuid.UUID = Field(...)
-    # TODO: add the foreign key constraint
-    course_id: uuid.UUID = Field(...)
+    trainee_id: uuid.UUID = Field(primary_key=True, foreign_key="trainees.id")
+    course_id: uuid.UUID = Field(primary_key=True, foreign_key="courses.id")
     registration_date: date = Field(...)
     registration_status: str = Field(...)
+
+    trainee: Optional[Trainee] = Relationship(back_populates="registrations")
+    course: Optional[CourseBase] = Relationship(back_populates="registrations")
 
 
 def test():

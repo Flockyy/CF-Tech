@@ -1,7 +1,7 @@
 import uuid
 from sqlmodel import Field, Relationship, SQLModel
 from datetime import date
-from typing import Optional
+from typing import List, Optional
 import enum
 
 from app.models.trainer import Trainer
@@ -33,6 +33,7 @@ class CourseBase(SQLModel, table=True):
     prerequisite: Optional[str] = None
 
     trainer: Optional[Trainer] = Relationship(back_populates="courses")
+    registrations: List["RegistrationBase"] = Relationship(back_populates="course")
 
 
 def test():
