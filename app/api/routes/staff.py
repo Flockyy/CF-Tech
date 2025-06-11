@@ -1,6 +1,7 @@
 from fastapi import APIRouter, HTTPException
 from app.api.deps import SessionDep
 from app.schemas.staff_schema import StaffCreate, StaffPublic
+from app.schemas.duty_staff_schema import DutyStaffPublic
 from app.crud import staff_crud
 import uuid
 
@@ -74,3 +75,19 @@ def list_staff(*, session: SessionDep):
     """
     staff_list = staff_crud.get_all_staff(session=session)
     return staff_list
+
+
+@router.post("/{staff_id}/duties", response_model=DutyStaffPublic)
+def add_staff_duties(
+    session: SessionDep, staff_id: uuid.UUID, duty_id: uuid.UUID
+):
+    """
+    Add a duty to a staff member.
+    """
+    staff = staff_crud.get_staff(session=session, staff_id=staff_id)
+    if not staff:
+        raise HTTPException(status_code=404, detail="Staff member not found")
+    duty_link = staff_crud.add_duty_to_staff(
+        session=session, staff_id=staff_id, duty_id=duty_id
+    )
+    return duty_link

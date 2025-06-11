@@ -13,6 +13,8 @@ import os
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from dotenv import load_dotenv
 
+load_dotenv()
+
 
 def parse_cors(v: Any) -> list[str] | str:
     if isinstance(v, str) and not v.startswith("["):
@@ -72,10 +74,10 @@ class Settings(BaseSettings):
     Application settings loaded from environment variables or a .env file.
     """
 
-    load_dotenv()
     DATABASE_URL: str = os.getenv("DATABASE_URL")
     DB_ADMIN_EMAIL: str = os.getenv("DB_ADMIN_EMAIL")
-
+    DB_ADMIN_FIRSTNAME: str
+    DB_ADMIN_LASTNAME: str
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
 
     SQLALCHEMY_DATABASE_URI: str = DATABASE_URL
