@@ -1,9 +1,9 @@
-from .user import User
+from .user import UserBase
 from datetime import datetime, timezone
 from sqlmodel import Field
 
 
-class Admin(User, table=True):
+class AdminBase(UserBase, table=True):
     """
     Admin model that inherits from User.
     This model can be extended with additional fields specific to administrators.

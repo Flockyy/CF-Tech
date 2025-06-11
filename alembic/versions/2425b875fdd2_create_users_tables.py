@@ -65,7 +65,7 @@ def upgrade() -> None:
     sa.UniqueConstraint('name'),
     sa.UniqueConstraint('serial_number')
     )
-    op.create_table('registration',
+    op.create_table('registrations',
     sa.Column('id', sa.Uuid(), nullable=False),
     sa.Column('trainee_id', sa.Uuid(), nullable=False),
     sa.Column('course_id', sa.Uuid(), nullable=False),
@@ -153,7 +153,7 @@ def downgrade() -> None:
     op.drop_table('trainees')
     op.drop_table('staff')
     op.drop_table('rooms')
-    op.drop_table('registration')
+    op.drop_table('registrations')
     op.drop_table('equipments')
     op.drop_table('courses')
     op.drop_table('attendances')

@@ -1,10 +1,10 @@
-from app.models.trainee import Trainee
+from app.models.trainee import TraineeBase
 from app.schemas.trainee_schema import TraineeCreate, TraineeUpdate
 from sqlmodel import Session, select
 import uuid
 
 
-def create_trainee(session: Session, trainee: TraineeCreate) -> Trainee:
+def create_trainee(session: Session, trainee: TraineeCreate) -> TraineeBase:
     """
     Create a new trainee in the database.
     Args:
@@ -14,14 +14,14 @@ def create_trainee(session: Session, trainee: TraineeCreate) -> Trainee:
         Trainee: The created trainee.
     """
 
-    db_trainee = Trainee.model_validate(trainee)
+    db_trainee = TraineeBase.model_validate(trainee)
     session.add(db_trainee)
     session.commit()
     session.refresh(db_trainee)
     return db_trainee
 
 
-def get_trainee(session: Session, trainee_id: uuid.UUID) -> Trainee:
+def get_trainee(session: Session, trainee_id: uuid.UUID) -> TraineeBase:
     """
     Retrieve a trainee by their ID from the database.
     Args:
@@ -32,13 +32,13 @@ def get_trainee(session: Session, trainee_id: uuid.UUID) -> Trainee:
     Raises:
         ValueError: If the trainee is not found.
     """
-    db_trainee = session.get(Trainee, trainee_id)
+    db_trainee = session.get(TraineeBase, trainee_id)
     if not db_trainee:
         raise ValueError("Trainee not found")
     return db_trainee
 
 
-def get_all_trainees(session: Session) -> list[Trainee]:
+def get_all_trainees(session: Session) -> list[TraineeBase]:
     """
     Retrieve all trainees from the database.
     Args:
@@ -46,13 +46,13 @@ def get_all_trainees(session: Session) -> list[Trainee]:
     Returns:
         list[Trainee]: A list of all trainee objects.
     """
-    statement = select(Trainee)
+    statement = select(TraineeBase)
     return session.exec(statement).all()
 
 
 def update_trainee(
     session: Session, trainee_id: uuid.UUID, trainee_update: TraineeUpdate
-) -> Trainee:
+) -> TraineeBase:
     """
     Update an existing trainee in the database.
     Args:
@@ -64,7 +64,7 @@ def update_trainee(
     Raises:
         ValueError: If the trainee is not found.
     """
-    db_trainee = session.get(Trainee, trainee_id)
+    db_trainee = session.get(TraineeBase, trainee_id)
     if not db_trainee:
         raise ValueError("Trainee not found")
 
@@ -87,7 +87,7 @@ def delete_trainee(session: Session, trainee_id: uuid.UUID) -> None:
     Raises:
         ValueError: If the trainee is not found.
     """
-    db_trainee = session.get(Trainee, trainee_id)
+    db_trainee = session.get(TraineeBase, trainee_id)
     if not db_trainee:
         raise ValueError("Trainee not found")
 
@@ -95,7 +95,7 @@ def delete_trainee(session: Session, trainee_id: uuid.UUID) -> None:
     session.commit()
 
 
-def get_trainee_by_email(session: Session, email: str) -> Trainee:
+def get_trainee_by_email(session: Session, email: str) -> TraineeBase:
     """
     Retrieve a trainee by their email from the database.
     Args:
@@ -104,6 +104,6 @@ def get_trainee_by_email(session: Session, email: str) -> Trainee:
     Returns:
         Trainee: The trainee object if found.
     """
-    statement = select(Trainee).where(Trainee.email == email)
+    statement = select(TraineeBase).where(TraineeBase.email == email)
     result = session.exec(statement).first()
     return result

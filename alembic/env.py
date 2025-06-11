@@ -10,10 +10,10 @@ from alembic import context
 from dotenv import load_dotenv
 from sqlmodel import SQLModel
 
-from app.models.admin import Admin
-from app.models.staff import Staff, Duty, DutyStaffLink
-from app.models.trainee import Trainee
-from app.models.trainer import Trainer
+from app.models.admin import AdminBase
+from app.models.staff import StaffBase, DutyBase, DutyStaffLink
+from app.models.trainee import TraineeBase
+from app.models.trainer import TrainerBase
 from app.models.attendance import AttendanceBase
 from app.models.course import CourseBase
 from app.models.registration import RegistrationBase

@@ -69,7 +69,7 @@ class Settings(BaseSettings):
             path=self.POSTGRES_DB,
         )
 
-    SQLITE_DB: str = "sqlite:///./app.db"
+    SQLITE_DB: str = "sqlite:///./database.db"
     """
     Application settings loaded from environment variables or a .env file.
     """

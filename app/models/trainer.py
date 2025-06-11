@@ -1,10 +1,10 @@
-from .user import User
+from .user import UserBase
 from typing import List, Optional
 from sqlmodel import Field, Relationship
 from datetime import datetime
 
 
-class Trainer(User, table=True):
+class TrainerBase(UserBase, table=True):
     """
     Trainer model that inherits from User.
     This model can be extended with additional fields specific to trainers.

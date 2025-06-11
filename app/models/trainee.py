@@ -1,10 +1,10 @@
-from .user import User
+from .user import UserBase
 from datetime import datetime, timezone
 from typing import List, Optional
 from sqlmodel import Field, Relationship
 
 
-class Trainee(User, table=True):
+class TraineeBase(UserBase, table=True):
     """
     Trainee model that inherits from User.
     This model can be extended with additional fields specific to trainees.

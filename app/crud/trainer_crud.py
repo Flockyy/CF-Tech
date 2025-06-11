@@ -1,11 +1,11 @@
 from app.schemas.trainer_schema import TrainerCreate, TrainerUpdate
-from app.models.trainer import Trainer
+from app.models.trainer import TrainerBase
 from typing import Optional
 from sqlmodel import Session, select
 import uuid
 
 
-def create_trainer(session: Session, trainer: TrainerCreate) -> Trainer:
+def create_trainer(session: Session, trainer: TrainerCreate) -> TrainerBase:
     """
     Create a new trainer in the database.
     Args:
@@ -14,14 +14,14 @@ def create_trainer(session: Session, trainer: TrainerCreate) -> Trainer:
     Returns:
         Trainer: The created trainer.
     """
-    db_trainer = Trainer.model_validate(trainer)
+    db_trainer = TrainerBase.model_validate(trainer)
     session.add(db_trainer)
     session.commit()
     session.refresh(db_trainer)
     return db_trainer
 
 
-def get_trainer(session: Session, trainer_id: uuid.UUID) -> Optional[Trainer]:
+def get_trainer(session: Session, trainer_id: uuid.UUID) -> Optional[TrainerBase]:
     """
     Retrieve a trainer by ID from the database.
     Args:
@@ -30,10 +30,10 @@ def get_trainer(session: Session, trainer_id: uuid.UUID) -> Optional[Trainer]:
     Returns:
         Optional[Trainer]: The trainer object if found, otherwise None.
     """
-    return session.get(Trainer, trainer_id)
+    return session.get(TrainerBase, trainer_id)
 
 
-def get_all_trainers(session: Session) -> list[Trainer]:
+def get_all_trainers(session: Session) -> list[TrainerBase]:
     """
     Retrieve all trainers from the database.
     Args:
@@ -41,13 +41,13 @@ def get_all_trainers(session: Session) -> list[Trainer]:
     Returns:
         list[Trainer]: A list of all trainer objects.
     """
-    statement = select(Trainer)
+    statement = select(TrainerBase)
     return session.exec(statement).all()
 
 
 def update_trainer(
     session: Session, trainer_id: str, trainer_update: TrainerUpdate
-) -> Optional[Trainer]:
+) -> Optional[TrainerBase]:
     """
     Update an existing trainer in the database.
     Args:
@@ -57,7 +57,7 @@ def update_trainer(
     Returns:
         Optional[Trainer]: The updated trainer object if found, otherwise None.
     """
-    db_trainer = session.get(Trainer, trainer_id)
+    db_trainer = session.get(TrainerBase, trainer_id)
     if not db_trainer:
         return None
 
@@ -78,7 +78,7 @@ def delete_trainer(session: Session, trainer_id: uuid.UUID) -> bool:
     Returns:
         bool: True if the trainer was deleted, False if not found.
     """
-    db_trainer = session.get(Trainer, trainer_id)
+    db_trainer = session.get(TrainerBase, trainer_id)
     if not db_trainer:
         return False
 
@@ -87,7 +87,7 @@ def delete_trainer(session: Session, trainer_id: uuid.UUID) -> bool:
     return True
 
 
-def get_trainer_by_email(session: Session, email: str) -> Trainer:
+def get_trainer_by_email(session: Session, email: str) -> TrainerBase:
     """
     Retrieve a trainer by their email from the database.
     Args:
@@ -96,6 +96,6 @@ def get_trainer_by_email(session: Session, email: str) -> Trainer:
     Returns:
         Trainer: The trainer object if found, otherwise None.
     """
-    statement = select(Trainer).where(Trainer.email == email)
+    statement = select(TrainerBase).where(TrainerBase.email == email)
     result = session.exec(statement).first()
     return result
