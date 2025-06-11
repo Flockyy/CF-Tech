@@ -129,7 +129,6 @@ def put_equipments_in_classroom(
     of the table rooms with ID 'room_id' of the database connected as 'db'.
     The commit to the database may be postponed using 'apply_update_to_db'.
 
-
     Args:
         db (Session): The session connected to the database
         room_id (UUID): The ID of the classroom
@@ -143,6 +142,61 @@ def put_equipments_in_classroom(
     for equipment_id in equipment_ids:
         equipment_db = get_equipment(db, equipment_id)
         room_db.equipments.append(equipment_db)
+
+    db.add(room_db)
+    if apply_update_to_db:
+        db.commit()
+        db.refresh(room_db)
+
+    return room_db
+
+
+def delete_classroom(
+    db: Session,
+    room_id: UUID,
+    apply_delete_to_db: bool = False,
+) -> bool:
+    """Remove the entity with ID 'room_id' in the table rooms of the database connected as 'db'.
+
+    Args:
+        db (Session): The session connected to the database
+        room_id (UUID): The ID of the room
+        apply_delete_to_db (bool): Should the delete be already committed to the database ? If False, delete is postponed.
+
+    Returns:
+        bool: Was the entry removed ?
+    """
+    room_db = get_room(db, room_id)
+    db.delete(room_db)
+    if apply_delete_to_db:
+        db.commit()
+
+    return True
+
+
+def remove_equipments_from_classroom(
+    db: Session,
+    room_id: UUID,
+    equipment_ids: list[UUID],
+    apply_update_to_db: bool = False,
+) -> RoomBase:
+    """Disassociate some equipments with IDs 'equipment_ids' with the entity
+    of the table rooms with ID 'room_id' of the database connected as 'db'.
+    The commit to the database may be postponed using 'apply_update_to_db'.
+
+    Args:
+        db (Session): The session connected to the database
+        room_id (UUID): The ID of the classroom
+        equipment_ids (list[UUID]): The list of IDs of the equipments
+        apply_update_to_db (bool): Should the update be already committed to the database ? If False, commit is postponed.
+
+    Returns:
+        RoomBase: The content of the entry in the database.
+    """
+    room_db = get_room(db, room_id)
+    for equipment_id in equipment_ids:
+        equipment_db = get_equipment(db, equipment_id)
+        room_db.equipments.remove(equipment_db)
 
     db.add(room_db)
     if apply_update_to_db:
@@ -294,6 +348,61 @@ def put_equipment_in_classrooms(
     return equipment_db
 
 
+def delete_equipment(
+    db: Session,
+    equipment_id: UUID,
+    apply_delete_to_db: bool = False,
+) -> bool:
+    """Remove the entity with ID 'equipment_id' in the table equipments of the database connected as 'db'.
+
+    Args:
+        db (Session): The session connected to the database
+        equipment_id (UUID): The ID of the equipment
+        apply_delete_to_db (bool): Should the delete be already committed to the database ? If False, delete is postponed.
+
+    Returns:
+        bool: Was the entry removed ?
+    """
+    equipment_db = get_equipment(db, equipment_id)
+    db.delete(equipment_db)
+    if apply_delete_to_db:
+        db.commit()
+
+    return True
+
+
+def remove_equipment_from_classrooms(
+    db: Session,
+    equipment_id: UUID,
+    room_ids: list[UUID],
+    apply_update_to_db: bool = False,
+) -> EquipmentBase:
+    """Disassociate an equipment with ID 'equipment_id' with the entities
+    of the table rooms with IDs 'room_ids' of the database connected as 'db'.
+    The commit to the database may be postponed using 'apply_update_to_db'.
+
+    Args:
+        db (Session): The session connected to the database
+        equipment_id (UUID): The ID of the equipment
+        room_ids (list[UUID]): The list of IDs of the rooms
+        apply_update_to_db (bool): Should the update be already committed to the database ? If False, commit is postponed.
+
+    Returns:
+        EquipmentBase: The content of the entry in the database.
+    """
+    equipment_db = get_equipment(db, equipment_id)
+    for room_id in room_ids:
+        room_db = get_room(db, room_id)
+        equipment_db.rooms.remove(room_db)
+
+    db.add(equipment_db)
+    if apply_update_to_db:
+        db.commit()
+        db.refresh(equipment_db)
+
+    return equipment_db
+
+
 def test():
     """Test the module functions"""
 
@@ -421,6 +530,42 @@ def test():
         room_ids.append(get_room_by_name(session, "A102").id)
         room_ids.append(get_room_by_name(session, "B209").id)
         equipment_db = put_equipment_in_classrooms(
+            session, equipment_db.id, room_ids, True
+        )
+        print(equipment_db)
+
+        # Remove a room
+        new_equipment = ClassroomCreate(
+            name="A301", capacity=150, location="Building North, 3rd floor"
+        )
+        print(new_equipment)
+        new_room_db = create_classroom(new_equipment, True, session)
+        delete_classroom(session, new_room_db.id, True)
+
+        # Remove equipments to room
+        room_db = get_room_by_name(session, "A102")
+        equipment_ids = []
+        equipment_ids.append(get_equipment_by_name(session, "Computer1").id)
+        equipment_ids.append(get_equipment_by_name(session, "Computer2").id)
+        equipment_ids.append(get_equipment_by_name(session, "Computer3").id)
+        room_db = remove_equipments_from_classroom(
+            session, room_db.id, equipment_ids, True
+        )
+        print(room_db)
+
+        # Remove an equipment
+        new_equipment = EquipmentCreate(name="Sofa")
+        print(new_equipment)
+        new_equipment_db = create_equipment(new_equipment, True, session)
+        delete_equipment(session, new_equipment_db.id, True)
+
+        # Remove equipments to room
+        equipment_db = get_equipment_by_name(session, "Table")
+        room_ids = []
+        room_ids.append(get_room_by_name(session, "A101").id)
+        room_ids.append(get_room_by_name(session, "A102").id)
+        room_ids.append(get_room_by_name(session, "B209").id)
+        equipment_db = remove_equipment_from_classrooms(
             session, equipment_db.id, room_ids, True
         )
         print(equipment_db)
