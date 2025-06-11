@@ -13,10 +13,8 @@ class AttendanceBase(SQLModel, table=True):
 
     __tablename__ = "attendances"
 
-    # TODO: add the foreign key constraint
-    trainee_id: uuid.UUID = Field(primary_key=True)
-    # TODO: add the foreign key constraint
-    course_id: uuid.UUID = Field(primary_key=True)
+    trainee_id: uuid.UUID = Field(primary_key=True, foreign_key="trainees.id")
+    course_id: uuid.UUID = Field(primary_key=True, foreign_key="courses.id")
     date_course: date = Field(...)
     am: bool = Field(default=False)
     pm: bool = Field(default=False)

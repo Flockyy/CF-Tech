@@ -1,6 +1,6 @@
 from .user import User
-from typing import Optional
-from sqlmodel import Field
+from typing import List, Optional
+from sqlmodel import Field, Relationship
 from datetime import datetime
 
 
@@ -20,3 +20,5 @@ class Trainer(User, table=True):
     bio: Optional[str] = Field(
         default=None, max_length=500
     )  # Short biography of the trainer
+
+    courses: List["CourseBase"] = Relationship(back_populates="trainer")
