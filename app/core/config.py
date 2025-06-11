@@ -80,6 +80,8 @@ class Settings(BaseSettings):
 
     SQLALCHEMY_DATABASE_URI: str = DATABASE_URL
     FIRST_SUPERUSER: str = DB_ADMIN_EMAIL
+    DB_ADMIN_FIRSTNAME: str
+    DB_ADMIN_LASTNAME: str
 
 
 settings = Settings()  # type: ignore
