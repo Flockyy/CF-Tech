@@ -15,15 +15,15 @@ def test_registration_create():
         registration_date="2025-06-06",
         registration_status=RegistrationStatus.pending,
     )
-    assert isinstance(
-        registration_data, RegistrationCreate
-    ), "registration_data should be an instance of RegistrationCreate"
-    assert (
-        registration_data.registration_date == "2025-06-06"
-    ), "Registration date should be '2025-06-06'"
-    assert (
-        registration_data.registration_status == RegistrationStatus.pending
-    ), "Status should be 'Pending'"
+    assert isinstance(registration_data, RegistrationCreate), (
+        "registration_data should be an instance of RegistrationCreate"
+    )
+    assert registration_data.registration_date == "2025-06-06", (
+        "Registration date should be '2025-06-06'"
+    )
+    assert registration_data.registration_status == RegistrationStatus.pending, (
+        "Status should be 'Pending'"
+    )
 
 
 def test_registration_instance():
@@ -37,12 +37,12 @@ def test_registration_instance():
         registration_date="2025-06-06",
         registration_status=RegistrationStatus.pending,
     )
-    assert isinstance(
-        registration_data, RegistrationCreate
-    ), "registration_data should be an instance of RegistrationCreate"
-    assert (
-        registration_data.registration_date == "2025-06-06"
-    ), "Registration date should be '2025-06-06'"
-    assert (
-        registration_data.registration_status == RegistrationStatus.pending
-    ), "Status should be 'Pending'"
+    assert isinstance(registration_data, RegistrationCreate), (
+        "registration_data should be an instance of RegistrationCreate"
+    )
+    assert registration_data.registration_date == "2025-06-06", (
+        "Registration date should be '2025-06-06'"
+    )
+    assert registration_data.registration_status == RegistrationStatus.pending, (
+        "Status should be 'Pending'"
+    )

@@ -22,6 +22,7 @@ def create_trainer(*, session: SessionDep, trainer_in: TrainerCreate):
 
     return trainer
 
+
 @router.get("/{trainer_id}", response_model=TrainerPublic)
 def get_trainer(*, session: SessionDep, trainer_id: str):
     """
@@ -32,6 +33,7 @@ def get_trainer(*, session: SessionDep, trainer_id: str):
         raise HTTPException(status_code=404, detail="Trainer not found")
 
     return trainer
+
 
 @router.put("/{trainer_id}", response_model=TrainerPublic)
 def update_trainer(*, session: SessionDep, trainer_id: str, trainer_in: TrainerCreate):
@@ -46,7 +48,8 @@ def update_trainer(*, session: SessionDep, trainer_id: str, trainer_in: TrainerC
         session=session, trainer_id=trainer_id, trainer_update=trainer_in
     )
 
-    return updated_trainer  
+    return updated_trainer
+
 
 @router.delete("/{trainer_id}", response_model=dict)
 def delete_trainer(*, session: SessionDep, trainer_id: str):
@@ -60,6 +63,7 @@ def delete_trainer(*, session: SessionDep, trainer_id: str):
     trainer_crud.delete_trainer(session=session, trainer_id=trainer_id)
 
     return {"detail": "Trainer deleted successfully"}
+
 
 @router.get("/", response_model=list[TrainerPublic])
 def list_trainers(*, session: SessionDep):

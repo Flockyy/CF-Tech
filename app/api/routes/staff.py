@@ -5,6 +5,7 @@ from app.crud import staff_crud
 
 router = APIRouter(prefix="/staff", tags=["staff"])
 
+
 @router.post("/", response_model=StaffPublic)
 def create_staff(*, session: SessionDep, staff_in: StaffCreate):
     """
@@ -21,6 +22,7 @@ def create_staff(*, session: SessionDep, staff_in: StaffCreate):
 
     return staff
 
+
 @router.get("/{staff_id}", response_model=StaffPublic)
 def get_staff(*, session: SessionDep, staff_id: str):
     """
@@ -31,6 +33,7 @@ def get_staff(*, session: SessionDep, staff_id: str):
         raise HTTPException(status_code=404, detail="Staff member not found")
 
     return staff
+
 
 @router.put("/{staff_id}", response_model=StaffPublic)
 def update_staff(*, session: SessionDep, staff_id: str, staff_in: StaffCreate):
@@ -47,6 +50,7 @@ def update_staff(*, session: SessionDep, staff_id: str, staff_in: StaffCreate):
 
     return updated_staff
 
+
 @router.delete("/{staff_id}", response_model=dict)
 def delete_staff(*, session: SessionDep, staff_id: str):
     """
@@ -59,6 +63,7 @@ def delete_staff(*, session: SessionDep, staff_id: str):
     staff_crud.delete_staff(session=session, staff_id=staff_id)
 
     return {"detail": "Staff member deleted successfully"}
+
 
 @router.get("/", response_model=list[StaffPublic])
 def list_staff(*, session: SessionDep):

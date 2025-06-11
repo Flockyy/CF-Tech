@@ -1,12 +1,17 @@
 from app.models.trainee import Trainee
 from app.schemas.trainee_schema import TraineeCreate, TraineeUpdate
-from sqlmodel import Session
+from sqlmodel import Session, select
 
 
 def create_trainee(session: Session, trainee: TraineeCreate) -> Trainee:
     """
     Create a new trainee in the database.
     """
+    print(f"Type of trainee_in: {type(trainee)}")
+    print(
+        f"Content of trainee_in: {trainee.model_dump()}"
+    )  # Use model_dump() for Pydantic models
+
     db_trainee = Trainee.model_validate(trainee)
     session.add(db_trainee)
     session.commit()
@@ -23,11 +28,14 @@ def get_trainee(session: Session, trainee_id: str) -> Trainee:
         raise ValueError("Trainee not found")
     return db_trainee
 
+
 def get_all_trainees(session: Session) -> list[Trainee]:
     """
     Retrieve all trainees from the database.
     """
-    return session.exec(Trainee.select()).all()
+    statement = select(Trainee)
+    return session.exec(statement).all()
+
 
 def update_trainee(
     session: Session, trainee_id: str, trainee_update: TraineeUpdate
@@ -65,7 +73,8 @@ def get_trainee_by_email(session: Session, email: str) -> Trainee:
     """
     Retrieve a trainee by their email from the database.
     """
-    db_trainee = session.exec(Trainee.select().where(Trainee.email == email)).first()
-    if not db_trainee:
-        raise ValueError("Trainee with this email not found")
-    return db_trainee
+    statement = select(Trainee).where(Trainee.email == email)
+    result = session.exec(statement).first()
+    # if not result:
+    #     raise ValueError("Trainee with this email not found")
+    return result

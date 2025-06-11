@@ -1,7 +1,7 @@
 from pydantic import BaseModel, Field, field_validator
 from app.models.user import User
 from app.schemas.user_schema import UserCreate, UserUpdate
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Optional
 import uuid
 
@@ -27,7 +27,7 @@ class TraineeCreate(UserCreate, BaseModel):
         """
         Validate that the date of birth is at least 16 years ago.
         """
-        if value > datetime.now() - timedelta(days=365 * 16):
+        if value > datetime.now(timezone.utc) - timedelta(days=365 * 16):
             raise ValueError("Trainee must be at least 16 years old.")
         return value
 
@@ -63,4 +63,5 @@ class TraineePublic(User):
     Public model for Trainee that can be used for displaying trainee information.
     This model can be extended with additional fields specific to public views.
     """
+
     id: uuid.UUID

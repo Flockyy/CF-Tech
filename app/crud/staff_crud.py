@@ -23,11 +23,13 @@ def get_staff(session: Session, staff_id: str) -> Staff:
         raise ValueError("Staff member not found")
     return db_staff
 
+
 def get_all_staff(session: Session) -> list[Staff]:
     """
     Retrieve all staff members from the database.
     """
     return session.exec(Staff.select()).all()
+
 
 def update_staff(session: Session, staff_id: str, staff_update: StaffUpdate) -> Staff:
     """

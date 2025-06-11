@@ -18,7 +18,7 @@ def create_trainee(*, session: SessionDep, trainee_in: TraineeCreate):
             detail="The trainee with this email already exists in the system.",
         )
 
-    trainee = trainee_crud.create_trainee(session=session, trainee_create=trainee_in)
+    trainee = trainee_crud.create_trainee(session=session, trainee=trainee_in)
 
     return trainee
 
@@ -63,6 +63,7 @@ def delete_trainee(*, session: SessionDep, trainee_id: str):
     trainee_crud.delete_trainee(session=session, trainee_id=trainee_id)
 
     return {"message": "Trainee deleted successfully."}
+
 
 @router.get("/", response_model=list[TraineePublic])
 def list_trainees(*, session: SessionDep):

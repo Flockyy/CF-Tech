@@ -21,11 +21,13 @@ def get_trainer(session: Session, trainer_id: str) -> Optional[Trainer]:
     """
     return session.get(Trainer, trainer_id)
 
+
 def get_all_trainers(session: Session) -> list[Trainer]:
     """
     Retrieve all trainers from the database.
     """
     return session.exec(Trainer.select()).all()
+
 
 def update_trainer(
     session: Session, trainer_id: str, trainer_update: TrainerUpdate

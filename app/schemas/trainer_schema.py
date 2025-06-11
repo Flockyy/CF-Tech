@@ -4,6 +4,7 @@ from app.schemas.user_schema import UserCreate, UserUpdate
 from typing import Optional
 import uuid
 
+
 class TrainerCreate(UserCreate, BaseModel):
     """
     Trainer creation model that can be used for creating new trainers.
@@ -24,6 +25,7 @@ class TrainerUpdate(UserUpdate, BaseModel):
     specialty: Optional[str] = Field(default=None, max_length=100)
     hourly_rate: Optional[float] = Field(default=None, ge=0)
     bio: Optional[str] = Field(default=None, max_length=500)
+
 
 class TrainerPublic(User):
     id: uuid.UUID

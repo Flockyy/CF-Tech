@@ -5,6 +5,7 @@ from app.crud import admin_crud
 
 router = APIRouter(prefix="/admin", tags=["admin"])
 
+
 @router.post("/", response_model=AdminPublic)
 def create_admin(*, session: SessionDep, admin_in: AdminCreate):
     """
@@ -21,6 +22,7 @@ def create_admin(*, session: SessionDep, admin_in: AdminCreate):
 
     return admin
 
+
 @router.get("/{admin_id}", response_model=AdminPublic)
 def get_admin(*, session: SessionDep, admin_id: str):
     """
@@ -31,6 +33,7 @@ def get_admin(*, session: SessionDep, admin_id: str):
         raise HTTPException(status_code=404, detail="Admin not found")
 
     return admin
+
 
 @router.put("/{admin_id}", response_model=AdminPublic)
 def update_admin(*, session: SessionDep, admin_id: str, admin_in: AdminCreate):
@@ -47,6 +50,7 @@ def update_admin(*, session: SessionDep, admin_id: str, admin_in: AdminCreate):
 
     return updated_admin
 
+
 @router.delete("/{admin_id}", response_model=dict)
 def delete_admin(*, session: SessionDep, admin_id: str):
     """
@@ -59,6 +63,7 @@ def delete_admin(*, session: SessionDep, admin_id: str):
     admin_crud.delete_admin(session=session, admin_id=admin_id)
 
     return {"detail": "Admin deleted successfully"}
+
 
 @router.get("/", response_model=list[AdminPublic])
 def list_admins(*, session: SessionDep):

@@ -4,6 +4,7 @@ from app.models.user import User
 from app.schemas.user_schema import UserCreate, UserUpdate
 import uuid
 
+
 class StaffCreate(UserCreate, BaseModel):
     """
     Staff creation model that can be used for creating new staff members.
@@ -20,6 +21,7 @@ class StaffUpdate(UserUpdate, BaseModel):
     """
 
     position: Optional[str] = Field(None, max_length=100)
+
 
 class StaffPublic(User):
     id: uuid.UUID
