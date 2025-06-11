@@ -36,15 +36,6 @@ class EquipmentCreate(BaseModel):
     name: str = Field(...)
 
 
-class EquipmentUpdate(BaseModel):
-    """
-    Rules applied via pydantic for the update of an equipment in the database.
-    The rules are applied by Python before the request to the database is pushed.
-    """
-
-    name: str | None = Field(default=None)
-
-
 class RegisteredEquipmentCreate(EquipmentCreate):
     """
     Rules applied via pydantic for the creation of a registered equipment in the database.
@@ -56,12 +47,13 @@ class RegisteredEquipmentCreate(EquipmentCreate):
     )
 
 
-class RegisteredEquipmentUpdate(EquipmentUpdate):
+class EquipmentUpdate(BaseModel):
     """
-    Rules applied via pydantic for the update of a registered equipment in the database.
+    Rules applied via pydantic for the update of an equipment in the database.
     The rules are applied by Python before the request to the database is pushed.
     """
 
+    name: str | None = Field(default=None)
     serial_number: str | None = Field(
         default=None, min_length=10, max_length=10, pattern=r"^([a-z]|[A-Z]|[0-9])+$"
     )
@@ -75,27 +67,10 @@ class InRoomEquipmentCreate(EquipmentCreate):
 
     rooms: list[RoomBase] = Field(...)
 
-class InRoomEquipmentUpdate(EquipmentUpdate):
-    """
-    Rules applied via pydantic for the update of an equipment placed in some rooms in the database.
-    The rules are applied by Python before the request to the database is pushed.
-    """
-
-    rooms: list[RoomBase] | None = Field(default=None)
-
 
 class InRoomRegisteredEquipmentCreate(RegisteredEquipmentCreate, InRoomEquipmentCreate):
     """
     Rules applied via pydantic for the creation of a registered equipment placed in some rooms in the database.
-    The rules are applied by Python before the request to the database is pushed.
-    """
-
-    pass
-
-
-class InRoomRegisteredEquipmentUpdate(RegisteredEquipmentUpdate, InRoomEquipmentUpdate):
-    """
-    Rules applied via pydantic for the update of a registered equipment placed in some rooms in the database.
     The rules are applied by Python before the request to the database is pushed.
     """
 
@@ -124,7 +99,6 @@ def test():
         name="TV", rooms=[room1_db], serial_number="aU1854Eqd4"
     )
     print(equipment4)
-
 
     # Test update
     room1 = ClassroomUpdate(
