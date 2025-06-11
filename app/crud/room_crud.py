@@ -1,7 +1,8 @@
 import os, sys
 
 sys.path.append(os.getcwd())
-from sqlmodel import Session, create_engine, SQLModel
+from sqlmodel import Session, create_engine, SQLModel, select, Sequence
+from uuid import UUID
 from app.models.room import RoomBase, EquipmentBase
 from app.schemas.room_schema import (
     ClassroomCreate,
@@ -38,6 +39,52 @@ def create_classroom(
     return room_db
 
 
+def get_room(db: Session, room_id: UUID) -> RoomBase:
+    """Select a room in the database given its ID.
+
+    Args:
+        db (Session): The session connected to the database
+        room_id (UUID): The room ID in the database
+
+    Raises:
+        ValueError: No room found with this ID
+
+    Returns:
+        RoomBase: The room and its equipments
+    """
+    room_db = db.get(RoomBase, room_id)
+    if not room_db:
+        raise ValueError(f"Room with ID {room_id} not found")
+    return room_db
+
+
+def select_all_rooms(db: Session) -> list[RoomBase]:
+    """Select all rooms in the database and return them in a list.
+
+    Args:
+        db (Session): The session connected to the database
+
+    Returns:
+        list[RoomBase]: The list of rooms with their equipments 
+    """
+    rooms_db = db.exec(select(RoomBase)).all()
+    return rooms_db
+
+
+def select_room(db: Session, name: str) -> RoomBase:
+    """Select a room given its name.
+
+    Args:
+        db (Session): The session connected to the database
+        name (str): The name of the room
+
+    Returns:
+        RoomBase: The room and its equipments
+    """
+    room_db = db.exec(select(RoomBase).where(RoomBase.name == name)).one()
+    return room_db
+
+
 def create_equipment(
     equipment_in: EquipmentCreate, add_to_db: bool = False, db: Session | None = None
 ) -> EquipmentBase:
@@ -65,6 +112,52 @@ def create_equipment(
         db.commit()
         db.refresh(equipment_db)
 
+    return equipment_db
+
+
+def get_equipment(db: Session, equipment_id: UUID) -> EquipmentBase:
+    """Select an equipment in the database given its ID.
+
+    Args:
+        db (Session): The session connected to the database
+        equipment_id (UUID): The equipment ID in the database
+
+    Raises:
+        ValueError: No equipment found with this ID
+
+    Returns:
+        EquipmentBase: The equipment and the associated rooms
+    """
+    equipment_db = db.get(EquipmentBase, equipment_id)
+    if not equipment_db:
+        raise ValueError(f"Equipment with ID {equipment_id} not found")
+    return equipment_db
+
+
+def select_all_equipments(db: Session) -> list[EquipmentBase]:
+    """Select all equipments in the database and return them in a list.
+
+    Args:
+        db (Session): The session connected to the database
+
+    Returns:
+        list[EquipmentBase]: The list of equipments with their associated rooms 
+    """
+    equipments_db = db.exec(select(EquipmentBase)).all()
+    return equipments_db
+
+
+def select_equipment(db: Session, name: str) -> EquipmentBase:
+    """Select an equipment given its name.
+
+    Args:
+        db (Session): The session connected to the database
+        name (str): The name of the equipment
+
+    Returns:
+        EquipmentBase: The equipment and its associated rooms
+    """
+    equipment_db = db.exec(select(EquipmentBase).where(EquipmentBase.name == name)).one()
     return equipment_db
 
 
@@ -98,7 +191,9 @@ def test():
     print(equipment1)
     equipment2 = RegisteredEquipmentCreate(name="Computer", serial_number="aU1854Eqd4")
     print(equipment2)
-    equipment3 = InRoomEquipmentCreate(name="White board", rooms=[room1_db, room2_db, room3_db])
+    equipment3 = InRoomEquipmentCreate(
+        name="White board", rooms=[room1_db, room2_db, room3_db]
+    )
     print(equipment3)
     equipment4 = InRoomRegisteredEquipmentCreate(
         name="TV", rooms=[room2_db], serial_number="yU1854Eqd5"
@@ -111,6 +206,29 @@ def test():
         equipment_db = create_equipment(equipment3, True, session)
         equipment_db = create_equipment(equipment4, True, session)
 
+        rooms = select_all_rooms(session)
+        for room in rooms:
+            print(room)
+
+        room = select_room(session, "A103")
+        print(room)
+        print(room.equipments)
+
+        room_bis = get_room(session, room.id)
+        print(room_bis)
+        print(room_bis.equipments)
+
+        equipments = select_all_equipments(session)
+        for equipment in equipments:
+            print(equipment)
+
+        equipment = select_equipment(session, "White board")
+        print(equipment)
+        print(equipment.rooms)
+
+        equipment_bis = get_room(session, room.id)
+        print(equipment_bis)
+        print(equipment_bis.equipments)
 
 if __name__ == "__main__":
     test()

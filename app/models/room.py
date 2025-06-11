@@ -25,7 +25,7 @@ class RoomBase(SQLModel, table=True):
     __tablename__ = "rooms"
 
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
-    name: str = Field(..., unique=True, min_length=2, max_length=50)
+    name: str = Field(..., unique=True, index=True, min_length=2, max_length=50)
     location: str = Field(..., min_length=2, max_length=50)
     capacity: int | None = Field(default=None, ge=1)
     is_active: bool = Field(default=True)
