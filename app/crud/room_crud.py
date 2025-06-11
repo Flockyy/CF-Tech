@@ -348,6 +348,61 @@ def put_equipment_in_classrooms(
     return equipment_db
 
 
+def delete_equipment(
+    db: Session,
+    equipment_id: UUID,
+    apply_delete_to_db: bool = False,
+) -> bool:
+    """Remove the entity with ID 'equipment_id' in the table equipments of the database connected as 'db'.
+
+    Args:
+        db (Session): The session connected to the database
+        equipment_id (UUID): The ID of the equipment
+        apply_delete_to_db (bool): Should the delete be already committed to the database ? If False, delete is postponed.
+
+    Returns:
+        bool: Was the entry removed ?
+    """
+    equipment_db = get_equipment(db, equipment_id)
+    db.delete(equipment_db)
+    if apply_delete_to_db:
+        db.commit()
+
+    return True
+
+
+def remove_equipment_from_classrooms(
+    db: Session,
+    equipment_id: UUID,
+    room_ids: list[UUID],
+    apply_update_to_db: bool = False,
+) -> EquipmentBase:
+    """Disassociate an equipment with ID 'equipment_id' with the entities
+    of the table rooms with IDs 'room_ids' of the database connected as 'db'.
+    The commit to the database may be postponed using 'apply_update_to_db'.
+
+    Args:
+        db (Session): The session connected to the database
+        equipment_id (UUID): The ID of the equipment
+        room_ids (list[UUID]): The list of IDs of the rooms
+        apply_update_to_db (bool): Should the update be already committed to the database ? If False, commit is postponed.
+
+    Returns:
+        EquipmentBase: The content of the entry in the database.
+    """
+    equipment_db = get_equipment(db, equipment_id)
+    for room_id in room_ids:
+        room_db = get_room(db, room_id)
+        equipment_db.rooms.remove(room_db)
+
+    db.add(equipment_db)
+    if apply_update_to_db:
+        db.commit()
+        db.refresh(equipment_db)
+
+    return equipment_db
+
+
 def test():
     """Test the module functions"""
 
@@ -480,11 +535,11 @@ def test():
         print(equipment_db)
 
         # Remove a room
-        new_room = ClassroomCreate(
+        new_equipment = ClassroomCreate(
             name="A301", capacity=150, location="Building North, 3rd floor"
         )
-        print(new_room)
-        new_room_db = create_classroom(new_room, True, session)
+        print(new_equipment)
+        new_room_db = create_classroom(new_equipment, True, session)
         delete_classroom(session, new_room_db.id, True)
 
         # Remove equipments to room
@@ -497,6 +552,23 @@ def test():
             session, room_db.id, equipment_ids, True
         )
         print(room_db)
+
+        # Remove an equipment
+        new_equipment = EquipmentCreate(name="Sofa")
+        print(new_equipment)
+        new_equipment_db = create_equipment(new_equipment, True, session)
+        delete_equipment(session, new_equipment_db.id, True)
+
+        # Remove equipments to room
+        equipment_db = get_equipment_by_name(session, "Table")
+        room_ids = []
+        room_ids.append(get_room_by_name(session, "A101").id)
+        room_ids.append(get_room_by_name(session, "A102").id)
+        room_ids.append(get_room_by_name(session, "B209").id)
+        equipment_db = remove_equipment_from_classrooms(
+            session, equipment_db.id, room_ids, True
+        )
+        print(equipment_db)
 
 
 if __name__ == "__main__":
