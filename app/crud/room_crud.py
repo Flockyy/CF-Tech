@@ -11,6 +11,7 @@ from app.schemas.room_schema import (
     RegisteredEquipmentCreate,
     InRoomEquipmentCreate,
     InRoomRegisteredEquipmentCreate,
+    EquipmentUpdate,
 )
 
 
@@ -229,6 +230,70 @@ def get_equipment_by_name(db: Session, name: str) -> EquipmentBase:
     return equipment_db
 
 
+def update_equipment(
+    db: Session,
+    equipment_id: UUID,
+    equipment_update: EquipmentUpdate,
+    apply_update_to_db: bool = False,
+) -> EquipmentBase:
+    """Update the entity with ID 'equipment_id' in the table equipments of the database connected as 'db',
+    based on the object 'equipment_update'. 'equipment_update' is already filtered on the pydantic
+    rules set-up in the class EquipmentUpdate.
+
+    Args:
+        db (Session): The session connected to the database
+        equipment_id (UUID): The ID of the equipment
+        equipment_update (EquipmentUpdate): The equipment data to consider in the update respecting the pydantic rules set-up in the class EquipmentUpdate.
+        apply_update_to_db (bool): Should the update be already committed to the database ? If False, commit is postponed.
+
+    Returns:
+        EquipmentBase: The content of the entry in the database after the update.
+    """
+    equipment_db = get_equipment(db, equipment_id)
+    equipment_data = equipment_update.model_dump(exclude_unset=True)
+    for key, value in equipment_data.items():
+        setattr(equipment_db, key, value)
+
+    db.add(equipment_db)
+    if apply_update_to_db:
+        db.commit()
+        db.refresh(equipment_db)
+
+    return equipment_db
+
+
+def put_equipment_in_classrooms(
+    db: Session,
+    equipment_id: UUID,
+    room_ids: list[UUID],
+    apply_update_to_db: bool = False,
+) -> EquipmentBase:
+    """Associate an equipment with ID 'equipment_id' with the entities
+    of the table rooms with IDs 'room_ids' of the database connected as 'db'.
+    The commit to the database may be postponed using 'apply_update_to_db'.
+
+    Args:
+        db (Session): The session connected to the database
+        equipment_id (UUID): The ID of the equipment
+        room_ids (list[UUID]): The list of IDs of the rooms
+        apply_update_to_db (bool): Should the update be already committed to the database ? If False, commit is postponed.
+
+    Returns:
+        EquipmentBase: The content of the entry in the database.
+    """
+    equipment_db = get_equipment(db, equipment_id)
+    for room_id in room_ids:
+        room_db = get_room(db, room_id)
+        equipment_db.rooms.append(room_db)
+
+    db.add(equipment_db)
+    if apply_update_to_db:
+        db.commit()
+        db.refresh(equipment_db)
+
+    return equipment_db
+
+
 def test():
     """Test the module functions"""
 
@@ -278,6 +343,8 @@ def test():
         name="TV", rooms=[room2_db], serial_number="yU1854Eqd5"
     )
     print(equipment4)
+    equipment5 = EquipmentCreate(name="Table")
+    print(equipment5)
 
     # Push everything in the database
     with Session(engine) as session:
@@ -287,6 +354,7 @@ def test():
         create_equipment(equipment2_3, True, session)
         create_equipment(equipment3, True, session)
         create_equipment(equipment4, True, session)
+        create_equipment(equipment5, True, session)
 
         # Select some rooms from the database
         rooms = get_all_rooms(session)
@@ -327,7 +395,7 @@ def test():
         room_db = update_classroom(session, room_db.id, room_update, True)
         print(room_db)
 
-        # Add equipment to room
+        # Add equipments to room
         room_db = get_room_by_name(session, "A102")
         equipment_ids = []
         equipment_ids.append(get_equipment_by_name(session, "Computer1").id)
@@ -335,6 +403,27 @@ def test():
         equipment_ids.append(get_equipment_by_name(session, "Computer3").id)
         room_db = put_equipments_in_classroom(session, room_db.id, equipment_ids, True)
         print(room_db)
+
+        # Update an equipment
+        equipment_db = get_equipment_by_name(session, "Welcome desk")
+        print(equipment_db)
+        equipment_update = EquipmentUpdate(serial_number="dzlehr4945")
+        equipment_db = update_equipment(session, equipment_db.id, equipment_update)
+        print(equipment_db)
+        equipment_update = EquipmentUpdate(name="Welcome IA robot Alfonzo")
+        equipment_db = update_equipment(session, equipment_db.id, equipment_update)
+        print(equipment_db)
+
+        # Add rooms to equipment
+        equipment_db = get_equipment_by_name(session, "Table")
+        room_ids = []
+        room_ids.append(get_room_by_name(session, "A101").id)
+        room_ids.append(get_room_by_name(session, "A102").id)
+        room_ids.append(get_room_by_name(session, "B209").id)
+        equipment_db = put_equipment_in_classrooms(
+            session, equipment_db.id, room_ids, True
+        )
+        print(equipment_db)
 
 
 if __name__ == "__main__":
