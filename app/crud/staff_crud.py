@@ -1,6 +1,7 @@
 from app.models.staff import Staff
 from app.schemas.staff_schema import StaffCreate, StaffUpdate
-from sqlmodel import Session
+from sqlmodel import Session, select
+import uuid
 
 
 def create_staff(session: Session, staff: StaffCreate) -> Staff:
@@ -14,7 +15,8 @@ def create_staff(session: Session, staff: StaffCreate) -> Staff:
     return db_staff
 
 
-def get_staff(session: Session, staff_id: str) -> Staff:
+# TODO: Change all str to uuid.UUID for staff_id in the CRUD functions
+def get_staff(session: Session, staff_id: uuid.UUID) -> Staff:
     """
     Retrieve a staff member by ID from the database.
     """
@@ -24,7 +26,17 @@ def get_staff(session: Session, staff_id: str) -> Staff:
     return db_staff
 
 
-def update_staff(session: Session, staff_id: str, staff_update: StaffUpdate) -> Staff:
+def get_all_staff(session: Session) -> list[Staff]:
+    """
+    Retrieve all staff members from the database.
+    """
+    statement = select(Staff)
+    return session.exec(statement).all()
+
+
+def update_staff(
+    session: Session, staff_id: uuid.UUID, staff_update: StaffUpdate
+) -> Staff:
     """
     Update an existing staff member in the database.
     """
@@ -42,7 +54,7 @@ def update_staff(session: Session, staff_id: str, staff_update: StaffUpdate) -> 
     return db_staff
 
 
-def delete_staff(session: Session, staff_id: str) -> None:
+def delete_staff(session: Session, staff_id: uuid.UUID) -> None:
     """
     Delete a staff member from the database.
     """
@@ -52,3 +64,12 @@ def delete_staff(session: Session, staff_id: str) -> None:
 
     session.delete(db_staff)
     session.commit()
+
+
+def get_staff_by_email(session: Session, email: str) -> Staff:
+    """
+    Retrieve a staff member by their email from the database.
+    """
+    statement = select(Staff).where(Staff.email == email)
+    result = session.exec(statement).first()
+    return result

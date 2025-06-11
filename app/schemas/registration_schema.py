@@ -31,7 +31,6 @@ class RegistrationCreate(BaseModel):
 
 
 def test():
-
     print([t.value for t in RegistrationStatus])
 
     reg3 = RegistrationCreate(

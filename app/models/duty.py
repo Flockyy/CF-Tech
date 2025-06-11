@@ -1,5 +1,5 @@
 from sqlmodel import SQLModel, Field
-from datetime import datetime
+from datetime import datetime, timezone
 import uuid
 
 
@@ -13,4 +13,4 @@ class Duty(SQLModel, table=True):
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
     staff_id: uuid.UUID = Field(foreign_key="staff.id")
     description: str = Field(..., max_length=255)
-    created_at: datetime = Field(default_factory=datetime.now)
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))

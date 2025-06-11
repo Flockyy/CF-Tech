@@ -1,6 +1,6 @@
 from pydantic import EmailStr
 from sqlmodel import Field, SQLModel
-from datetime import datetime
+from datetime import datetime, timezone
 import uuid
 
 
@@ -14,6 +14,6 @@ class User(SQLModel, table=False):
     first_name: str = Field(..., min_length=2, max_length=50)
     last_name: str = Field(..., min_length=2, max_length=50)
     email: EmailStr = Field(unique=True, max_length=255)
-    created_at: datetime = Field(default_factory=datetime.now)
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     is_active: bool = Field(default=True)
     role: str = Field(default="user", max_length=20)

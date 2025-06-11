@@ -9,7 +9,7 @@ from app.models.staff import Staff
 from app.models.duty import Duty
 from app.core.config import settings
 
-engine = create_engine(str(settings.SQLALCHEMY_DATABASE_URI), echo=True)
+engine = create_engine(str(settings.SQLITE_DB), echo=True)
 
 load_dotenv()
 

@@ -1,4 +1,5 @@
-import os, sys
+import os
+import sys
 
 sys.path.append(os.getcwd())
 from sqlmodel import Session, create_engine, SQLModel
@@ -53,7 +54,8 @@ def test():
     print(reg1)
 
     with Session(engine) as session:
-        registration_db = create_registration(session, reg1)
+        create_registration(session, reg1)
+        # TODO : return registration_db ?
 
 
 if __name__ == "__main__":

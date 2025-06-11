@@ -18,7 +18,6 @@ class AttendanceCreate(BaseModel):
 
 
 def test():
-
     attendance1 = AttendanceCreate(
         trainee_id=uuid.uuid4(), course_id=uuid.uuid4(), date_course="2025-07-04"
     )

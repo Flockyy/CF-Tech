@@ -1,5 +1,5 @@
 from app.models.duty import Duty
-from app.schemas.duties_schema import DutyCreate, DutyUpdate
+from app.schemas.duty_schema import DutyCreate, DutyUpdate
 from datetime import datetime
 import uuid
 
