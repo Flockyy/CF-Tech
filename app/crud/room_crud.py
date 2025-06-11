@@ -1,7 +1,8 @@
 import os, sys
 
 sys.path.append(os.getcwd())
-from sqlmodel import Session, create_engine, SQLModel, select
+from sqlmodel import Session, create_engine, SQLModel, select, Sequence
+from uuid import UUID
 from app.models.room import RoomBase, EquipmentBase
 from app.schemas.room_schema import (
     ClassroomCreate,
@@ -38,14 +39,50 @@ def create_classroom(
     return room_db
 
 
-def select_all_rooms(db: Session, name: str | None = None):
-    if name:
-        statement = select(RoomBase).where(RoomBase.name == name)
-    else:
-        statement = select(RoomBase)
+def get_room(db: Session, room_id: UUID) -> RoomBase:
+    """Select a room in the database given its ID.
 
-    classrooms = db.exec(statement).all()
-    return classrooms
+    Args:
+        db (Session): The session connected to the database
+        room_id (UUID): The room ID in the database
+
+    Raises:
+        ValueError: No room found with this ID
+
+    Returns:
+        RoomBase: The room and its equipments
+    """
+    room_db = db.get(RoomBase, room_id)
+    if not room_db:
+        raise ValueError("Room with ID {} member not found")
+    return room_db
+
+
+def select_all_rooms(db: Session) -> Sequence[RoomBase]:
+    """Select all rooms in the database and return them in a list.
+
+    Args:
+        db (Session): The session connected to the database
+
+    Returns:
+        list[RoomBase]: The list of rooms with their equipments 
+    """
+    rooms_db = db.exec(select(RoomBase)).all()
+    return rooms_db
+
+
+def select_room(db: Session, name: str) -> RoomBase:
+    """Select a room given its name.
+
+    Args:
+        db (Session): The session connected to the database
+        name (str): The name of the room
+
+    Returns:
+        RoomBase: The room and its equipments
+    """
+    room_db = db.exec(select(RoomBase).where(RoomBase.name == name)).one()
+    return room_db
 
 
 def create_equipment(
@@ -126,6 +163,10 @@ def test():
         rooms = select_all_rooms(session)
         for room in rooms:
             print(room)
+
+        room = select_room(session, "A103")
+        print(room)
+        print(room.equipments)
 
 
 if __name__ == "__main__":
