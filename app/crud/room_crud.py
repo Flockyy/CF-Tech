@@ -12,14 +12,17 @@ from app.schemas.room_schema import (
 )
 
 
-def create_classroom(db: Session, room_in: ClassroomCreate) -> RoomBase:
+def create_classroom(
+    room_in: ClassroomCreate, add_to_db: bool = False, db: Session | None = None
+) -> RoomBase:
     """Insert an entity in the table rooms of the database connected as 'db',
     based on the object 'room_in'. 'room_in' is already filtered on the pydantic
     rules set-up in the class ClassroomCreate.
 
     Args:
+        room_in (ClassroomCreate): The classroom to insert respecting the pydantic rules set-up in the class ClassroomCreate.
+        add_to_db (bool): Should the classroom be already added to the database ? If False, means that if will be added via a relationship.
         db (Session): The session connected to the database
-        room_in (ClassroomCreate): The classroom to instert respecting the pydantic rules set-up in the class ClassroomCreate.
 
     Returns:
         RoomBase: The content of the entry in the database.
@@ -27,21 +30,25 @@ def create_classroom(db: Session, room_in: ClassroomCreate) -> RoomBase:
     room_db = RoomBase(
         name=room_in.name, capacity=room_in.capacity, location=room_in.location
     )
-    db.add(room_db)
-    db.commit()
-    db.refresh(room_db)
+    if add_to_db and db:
+        db.add(room_db)
+        db.commit()
+        db.refresh(room_db)
 
     return room_db
 
 
-def create_equipment(db: Session, equipment_in: EquipmentCreate) -> EquipmentBase:
+def create_equipment(
+    equipment_in: EquipmentCreate, add_to_db: bool = False, db: Session | None = None
+) -> EquipmentBase:
     """Insert an entity in the table equipments of the database connected as 'db',
     based on the object 'equipment_in'. 'equipment_in' is already filtered on the pydantic
     rules set-up in the class EquipmentCreate.
 
     Args:
+        equipment_in (EquipmentCreate): The equipment to insert respecting the pydantic rules set-up in the class EquipmentCreate.
+        add_to_db (bool): Should the equipment be already added to the database ? If False, means that if will be added via a relationship.
         db (Session): The session connected to the database
-        equipment_in (ClassroomCreate): The classroom to instert respecting the pydantic rules set-up in the class ClassroomCreate.
 
     Returns:
         RoomBase: The content of the entry in the database.
@@ -50,12 +57,13 @@ def create_equipment(db: Session, equipment_in: EquipmentCreate) -> EquipmentBas
     if isinstance(equipment_in, RegisteredEquipmentCreate):
         params["serial_number"] = equipment_in.serial_number
     if isinstance(equipment_in, InRoomEquipmentCreate):
-        params["id_room"] = equipment_in.id_room
+        params["rooms"] = equipment_in.rooms
 
     equipment_db = EquipmentBase(**params)
-    db.add(equipment_db)
-    db.commit()
-    db.refresh(equipment_db)
+    if add_to_db and db:
+        db.add(equipment_db)
+        db.commit()
+        db.refresh(equipment_db)
 
     return equipment_db
 
@@ -69,29 +77,39 @@ def test():
     engine = create_engine(sqlite_url, echo=True)
     SQLModel.metadata.create_all(engine)
 
-    room = ClassroomCreate(
+    # Create 3 rooms (but do not push them yet in the database)
+    room1 = ClassroomCreate(
         name="A101", capacity=18, location="Building North, 1st floor"
     )
-    print(room)
+    print(room1)
+    room1_db = create_classroom(room1)
+    room2 = ClassroomCreate(
+        name="A102", capacity=36, location="Building North, 1st floor"
+    )
+    print(room2)
+    room2_db = create_classroom(room2)
+    room3 = ClassroomCreate(
+        name="A103", capacity=18, location="Building North, 1st floor"
+    )
+    print(room3)
+    room3_db = create_classroom(room3)
+
     equipment1 = EquipmentCreate(name="Welcome desk")
     print(equipment1)
     equipment2 = RegisteredEquipmentCreate(name="Computer", serial_number="aU1854Eqd4")
     print(equipment2)
+    equipment3 = InRoomEquipmentCreate(name="White board", rooms=[room1_db, room2_db, room3_db])
+    print(equipment3)
+    equipment4 = InRoomRegisteredEquipmentCreate(
+        name="TV", rooms=[room2_db], serial_number="yU1854Eqd5"
+    )
+    print(equipment4)
 
     with Session(engine) as session:
-        room_db = create_classroom(session, room)
-
-        equipment3 = InRoomEquipmentCreate(name="White board", id_room=room_db.id)
-        print(equipment3)
-        equipment4 = InRoomRegisteredEquipmentCreate(
-            name="TV", id_room=room_db.id, serial_number="yU1854Eqd5"
-        )
-        print(equipment4)
-
-        equipment_db = create_equipment(session, equipment1)
-        equipment_db = create_equipment(session, equipment2)
-        equipment_db = create_equipment(session, equipment3)
-        equipment_db = create_equipment(session, equipment4)
+        equipment_db = create_equipment(equipment1, True, session)
+        equipment_db = create_equipment(equipment2, True, session)
+        equipment_db = create_equipment(equipment3, True, session)
+        equipment_db = create_equipment(equipment4, True, session)
 
 
 if __name__ == "__main__":

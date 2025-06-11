@@ -9,7 +9,9 @@ from pydantic import (
     computed_field,
 )
 from pydantic_core import MultiHostUrl
+import os
 from pydantic_settings import BaseSettings, SettingsConfigDict
+from dotenv import load_dotenv
 
 
 def parse_cors(v: Any) -> list[str] | str:
@@ -56,7 +58,7 @@ class Settings(BaseSettings):
 
     @computed_field  # type: ignore[prop-decorator]
     @property
-    def SQLALCHEMY_DATABASE_URI(self) -> PostgresDsn:
+    def PGSQL_DATABASE_URI(self) -> PostgresDsn:
         return MultiHostUrl.build(
             scheme="postgresql+psycopg",
             username=self.POSTGRES_USER,
@@ -67,6 +69,18 @@ class Settings(BaseSettings):
         )
 
     SQLITE_DB: str = "sqlite:///./app.db"
+    """
+    Application settings loaded from environment variables or a .env file.
+    """
+
+    load_dotenv()
+    DATABASE_URL = os.getenv("DATABASE_URL")
+    DB_ADMIN_EMAIL = os.getenv("DB_ADMIN_EMAIL")
+
+    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
+
+    SQLALCHEMY_DATABASE_URI: str = DATABASE_URL
+    FIRST_SUPERUSER: str = DB_ADMIN_EMAIL
 
 
 settings = Settings()  # type: ignore

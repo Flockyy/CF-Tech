@@ -1,3 +1,5 @@
+import os
+from dotenv import load_dotenv
 from sqlmodel import SQLModel, Session, create_engine
 from app.models.admin import Admin
 from app.models.user import User
@@ -8,6 +10,8 @@ from app.models.duty import Duty
 from app.core.config import settings
 
 engine = create_engine(str(settings.SQLITE_DB), echo=True)
+
+load_dotenv()
 
 
 def init_db():
@@ -28,8 +32,8 @@ def init_db():
 
         if not admin:
             admin_in = AdminCreate(
-                first_name="Admin",
-                last_name="User",
+                first_name=os.getenv("DB_ADMIN_FIRSTNAME"),
+                last_name=os.getenv("DB_ADMIN_LASTNAME"),
                 email=settings.FIRST_SUPERUSER,
                 role="admin",
                 admin_level=2,

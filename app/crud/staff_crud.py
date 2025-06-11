@@ -1,7 +1,7 @@
 from app.models.staff import Staff
 from app.schemas.staff_schema import StaffCreate, StaffUpdate
 from sqlmodel import Session
-
+import uuid
 
 def create_staff(session: Session, staff: StaffCreate) -> Staff:
     """
@@ -13,8 +13,8 @@ def create_staff(session: Session, staff: StaffCreate) -> Staff:
     session.refresh(db_staff)
     return db_staff
 
-
-def get_staff(session: Session, staff_id: str) -> Staff:
+# TODO: Change all str to uuid.UUID for staff_id in the CRUD functions
+def get_staff(session: Session, staff_id: uuid.UUID) -> Staff:
     """
     Retrieve a staff member by ID from the database.
     """
