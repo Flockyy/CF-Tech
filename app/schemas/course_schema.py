@@ -23,9 +23,7 @@ class CourseCreate(BaseModel):
         ...,
         description="Ending date of a course in ISO format (YYYY-MM-DD), must be > to starting date",
     )
-    # TODO: add the foreign key constraint
     room_id: uuid.UUID = Field(...)
-    # TODO: add the foreign key constraint
     trainer_id: uuid.UUID = Field(...)
     max_capacity: int = Field(...)
     status: str = Field(default=CourseStatus.open)

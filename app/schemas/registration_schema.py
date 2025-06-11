@@ -37,7 +37,7 @@ def test():
         trainee_id=uuid.uuid4(),
         course_id=uuid.uuid4(),
         registration_date=date.today(),
-        registration_status="TRAINING",
+        registration_status="REGISTERED",
     )
     print(reg3)
 
