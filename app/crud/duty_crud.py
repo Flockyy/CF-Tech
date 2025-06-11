@@ -1,6 +1,7 @@
 from app.models.duty import Duty
-from app.schemas.duties_schema import DutyCreate, DutyUpdate
-from sqlmodel import Session
+from app.schemas.duty_schema import DutyCreate, DutyUpdate
+from sqlmodel import Session, select
+import uuid
 
 
 def create_duty(session: Session, duty: DutyCreate) -> Duty:
@@ -14,7 +15,7 @@ def create_duty(session: Session, duty: DutyCreate) -> Duty:
     return db_duty
 
 
-def get_duty(session: Session, duty_id: str) -> Duty:
+def get_duty(session: Session, duty_id: uuid.UUID) -> Duty:
     """
     Retrieve a duty by ID from the database.
     """
@@ -24,7 +25,24 @@ def get_duty(session: Session, duty_id: str) -> Duty:
     return db_duty
 
 
-def update_duty(session: Session, duty_id: str, duty_update: DutyUpdate) -> Duty:
+def get_all_duties(session: Session) -> list[Duty]:
+    """
+    Retrieve all duties from the database.
+    """
+    statement = select(Duty)
+    return session.exec(statement).all()
+
+
+def get_duty_by_name(session: Session, duty_name: str) -> Duty:
+    """
+    Retrieve a duty by its name from the database.
+    """
+    statement = select(Duty).where(Duty.name == duty_name)
+    db_duty = session.exec(statement).first()
+    return db_duty
+
+
+def update_duty(session: Session, duty_id: uuid.UUID, duty_update: DutyUpdate) -> Duty:
     """
     Update an existing duty in the database.
     """
@@ -42,7 +60,7 @@ def update_duty(session: Session, duty_id: str, duty_update: DutyUpdate) -> Duty
     return db_duty
 
 
-def delete_duty(session: Session, duty_id: str) -> None:
+def delete_duty(session: Session, duty_id: uuid.UUID) -> None:
     """
     Delete a duty from the database.
     """

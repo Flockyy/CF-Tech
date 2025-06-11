@@ -43,7 +43,6 @@ class CourseCreate(BaseModel):
 
 
 def test():
-
     print([t.value for t in CourseStatus])
 
     course1 = CourseCreate(
