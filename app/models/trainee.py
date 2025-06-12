@@ -1,7 +1,7 @@
 from .user import User
 from datetime import datetime, timezone
-from typing import List, Optional
-from sqlmodel import Field, Relationship
+from typing import Optional
+from sqlmodel import Field
 
 
 class Trainee(User, table=True):

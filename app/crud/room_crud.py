@@ -1,7 +1,8 @@
-import os, sys
+import os
+import sys
 
 sys.path.append(os.getcwd())
-from sqlmodel import Session, create_engine, SQLModel, select, Sequence
+from sqlmodel import Session, create_engine, SQLModel, select
 from uuid import UUID
 from app.models.room import RoomBase, EquipmentBase
 from app.schemas.room_schema import (

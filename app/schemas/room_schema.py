@@ -1,4 +1,5 @@
-import os, sys
+import os 
+import sys
 
 sys.path.append(os.getcwd())
 from pydantic import BaseModel, Field
@@ -113,14 +114,8 @@ def test():
     room2_db = RoomBase(name="A102", location="Building North, 1st floor", capacity=30)
     equipment1 = EquipmentUpdate(name="Welcome desk")
     print(equipment1)
-    equipment2 = RegisteredEquipmentUpdate(name="TV", serial_number="aU1854Eqd4")
+    equipment2 = EquipmentUpdate(name="TV", serial_number="aU1854Eqd4")
     print(equipment2)
-    equipment3 = InRoomEquipmentUpdate(name="TV", rooms=[room1_db, room2_db])
-    print(equipment3)
-    equipment4 = InRoomRegisteredEquipmentUpdate(
-        name="TV", rooms=[room1_db], serial_number="aU1854Eqd4"
-    )
-    print(equipment4)
 
 
 if __name__ == "__main__":
