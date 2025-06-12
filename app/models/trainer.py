@@ -7,7 +7,10 @@ from datetime import datetime
 class Trainer(User, table=True):
     """
     Trainer model that inherits from User.
-    This model can be extended with additional fields specific to trainers.
+
+    Args:
+        User (User): Base user model that provides common user fields.
+        table (bool, optional): Whether the model is a SQLAlchemy table. Defaults to True.
     """
 
     __tablename__ = "trainers"
@@ -21,4 +24,4 @@ class Trainer(User, table=True):
         default=None, max_length=500
     )  # Short biography of the trainer
 
-    courses: List["CourseBase"] = Relationship(back_populates="trainer")
+    # courses: List["CourseBase"] = Relationship(back_populates="trainer")

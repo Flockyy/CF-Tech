@@ -6,7 +6,10 @@ from sqlmodel import Field
 class Admin(User, table=True):
     """
     Admin model that inherits from User.
-    This model can be extended with additional fields specific to administrators.
+
+    Args:
+        User (User): Base user model that provides common user fields.
+        table (bool, optional): Whether the model is a SQLAlchemy table. Defaults to True.
     """
 
     __tablename__ = "admins"

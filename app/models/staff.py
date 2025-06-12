@@ -7,7 +7,10 @@ import uuid
 class DutyStaffLink(SQLModel, table=True):
     """
     DutyStaffLink model that represents the many-to-many relationship between Duty and Staff.
-    This model links a duty to a staff member.
+
+    Args:
+        SQLModel (SQLModel): Base class for SQLAlchemy models.
+        table (bool, optional): Whether the model is a SQLAlchemy table. Defaults to True.
     """
 
     __tablename__ = "duty_staff_links"
@@ -22,7 +25,10 @@ class DutyStaffLink(SQLModel, table=True):
 class Staff(User, table=True):
     """
     Staff model that inherits from User.
-    This model can be extended with additional fields specific to staff members.
+
+    Args:
+        User (User): Base user model that provides common user fields.
+        table (bool, optional): Whether the model is a SQLAlchemy table. Defaults to True.
     """
 
     __tablename__ = "staff"
@@ -36,6 +42,10 @@ class Staff(User, table=True):
 class Duty(SQLModel, table=True):
     """
     Duty model that represents the various duties assigned to staff.
+
+    Args:
+        SQLModel (SQLModel): Base class for SQLAlchemy models.
+        table (bool, optional): Whether the model is a SQLAlchemy table. Defaults to True.
     """
 
     __tablename__ = "duties"

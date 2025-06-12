@@ -5,6 +5,9 @@ import uuid
 class DutyCreate(BaseModel):
     """
     Duty creation model that can be used for creating new duties.
+
+    Args:
+        BaseModel (BaseModel): Base model for Pydantic schemas.
     """
 
     title: str = Field(..., min_length=2, max_length=100)
@@ -14,6 +17,9 @@ class DutyCreate(BaseModel):
 class DutyUpdate(BaseModel):
     """
     Duty update model that can be used for updating existing duties.
+
+    Args:
+        BaseModel (BaseModel): Base model for Pydantic schemas.
     """
 
     title: str = Field(
@@ -25,4 +31,11 @@ class DutyUpdate(BaseModel):
 
 
 class DutyPublic(DutyCreate):
+    """
+    Public representation of a duty.
+
+    Args:
+        DutyCreate (DutyCreate): Base model for duty creation.
+    """
+
     id: uuid.UUID

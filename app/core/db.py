@@ -14,6 +14,9 @@ load_dotenv()
 
 
 def init_db():
+    """
+    Initialize the database.
+    """
     print("Creating tables...")
     SQLModel.metadata.create_all(engine)
 

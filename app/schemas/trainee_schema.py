@@ -9,7 +9,14 @@ import uuid
 class TraineeCreate(UserCreate, BaseModel):
     """
     Trainee creation model that can be used for creating new trainees.
-    This model can be extended with additional fields specific to trainees.
+
+    Args:
+        UserCreate (UserCreate): Base model for user creation.
+        BaseModel (BaseModel): Base model for Pydantic schemas.
+
+    Raises:
+        ValueError: If the trainee is under 16 years old.
+        ValueError: If the phone number is invalid.
     """
 
     date_of_birth: datetime = Field(
@@ -37,7 +44,13 @@ class TraineeCreate(UserCreate, BaseModel):
 class TraineeUpdate(UserUpdate, BaseModel):
     """
     Trainee update model that can be used for updating existing trainees.
-    This model can be extended with additional fields specific to trainees.
+
+    Args:
+        UserUpdate (UserUpdate): Base model for user updates.
+        BaseModel (BaseModel): Base model for Pydantic schemas.
+
+    Raises:
+        ValueError: If the trainee is under 16 years old.
     """
 
     date_of_birth: Optional[datetime] = Field(
@@ -52,8 +65,16 @@ class TraineeUpdate(UserUpdate, BaseModel):
 
     @field_validator("date_of_birth")
     def is_valid_date_of_birth(cls, value: datetime) -> datetime:
-        """
-        Validate that the date of birth is at least 16 years ago.
+        """Validate that the date of birth is at least 16 years ago.
+
+        Args:
+            value (datetime): The date of birth to validate.
+
+        Raises:
+            ValueError: If the trainee is under 16 years old.
+
+        Returns:
+            datetime: The validated date of birth.
         """
         if value and value > datetime.now(timezone.utc) - timedelta(days=365 * 16):
             raise ValueError("Trainee must be at least 16 years old.")
@@ -62,8 +83,9 @@ class TraineeUpdate(UserUpdate, BaseModel):
 
 class TraineePublic(User):
     """
-    Public model for Trainee that can be used for displaying trainee information.
-    This model can be extended with additional fields specific to public views.
+    Public representation of a trainee.
+    Args:
+        User (User): Base user model that provides common user fields.
     """
 
     id: uuid.UUID

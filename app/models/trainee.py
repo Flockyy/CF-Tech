@@ -7,7 +7,10 @@ from sqlmodel import Field, Relationship
 class Trainee(User, table=True):
     """
     Trainee model that inherits from User.
-    This model can be extended with additional fields specific to trainees.
+
+    Args:
+        User (User): Base user model that provides common user fields.
+        table (bool, optional): Whether the model is a SQLAlchemy table. Defaults to True.
     """
 
     __tablename__ = "trainees"
@@ -20,4 +23,4 @@ class Trainee(User, table=True):
     registration_date: datetime = Field(
         default_factory=lambda: datetime.now(timezone.utc)
     )
-    registrations: List["RegistrationBase"] = Relationship(back_populates="trainee")
+    # registrations: List["RegistrationBase"] = Relationship(back_populates="trainee")

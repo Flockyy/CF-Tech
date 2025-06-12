@@ -8,7 +8,10 @@ import uuid
 class AdminCreate(UserCreate, BaseModel):
     """
     Admin creation model that can be used for creating new administrators.
-    This model can be extended with additional fields specific to administrators.
+
+    Args:
+        UserCreate (UserCreate): Base model for user creation.
+        BaseModel (BaseModel): Base model for Pydantic schemas.
     """
 
     admin_level: int = Field(
@@ -20,7 +23,10 @@ class AdminCreate(UserCreate, BaseModel):
 class AdminUpdate(UserUpdate, BaseModel):
     """
     Admin update model that can be used for updating existing administrators.
-    This model can be extended with additional fields specific to administrators.
+
+    Args:
+        UserUpdate (UserUpdate): Base model for user updates.
+        BaseModel (BaseModel): Base model for Pydantic schemas.
     """
 
     admin_level: int = Field(
@@ -30,4 +36,11 @@ class AdminUpdate(UserUpdate, BaseModel):
 
 
 class AdminPublic(User):
+    """
+    Public representation of an admin user.
+
+    Args:
+        User (User): Base user model that provides common user fields.
+    """
+
     id: uuid.UUID

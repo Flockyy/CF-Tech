@@ -4,7 +4,9 @@ from pydantic import BaseModel, Field, EmailStr
 class UserCreate(BaseModel):
     """
     User creation model that can be used for creating new users.
-    This model can be extended with additional fields specific to different user roles.
+
+    Args:
+        BaseModel (BaseModel): Base model for Pydantic schemas.
     """
 
     first_name: str = Field(..., min_length=2, max_length=50)
@@ -16,7 +18,9 @@ class UserCreate(BaseModel):
 class UserUpdate(BaseModel):
     """
     User update model that can be used for updating existing users.
-    This model can be extended with additional fields specific to different user roles.
+
+    Args:
+        BaseModel (BaseModel): Base model for Pydantic schemas.
     """
 
     first_name: str = Field(None, min_length=2, max_length=50)

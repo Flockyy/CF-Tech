@@ -19,6 +19,15 @@ wait_seconds = 1
     after=after_log(logger, logging.WARN),
 )
 def init(db_engine: Engine) -> None:
+    """
+    Initialize the database connection.
+
+    Args:
+        db_engine (Engine): The SQLAlchemy database engine.
+
+    Raises:
+        e: If the database connection fails.
+    """
     try:
         with Session(db_engine) as session:
             # Try to create session to check if DB is awake
@@ -26,18 +35,6 @@ def init(db_engine: Engine) -> None:
     except Exception as e:
         logger.error(e)
         raise e
-
-
-def launch_pytest() -> None:
-    """
-    This function is a placeholder for launching pytest.
-    It can be used to run tests before the application starts.
-    """
-    # TODO: Implement pytest launch logic
-    logger.info("Launching pytest...")
-    # Here you would typically call pytest.main() or similar
-    # For example: pytest.main(["-q", "--tb=short", "app/tests"])
-    logger.info("Pytest launched successfully.")
 
 
 def main() -> None:
