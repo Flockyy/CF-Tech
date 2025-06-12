@@ -36,12 +36,15 @@ def init_db():
             InRoomEquipmentCreate,
         )
         from app.schemas.course_schema import CourseCreate
-        from app.schemas.registration_schema import RegistrationCreate, RegistrationStatus
+        from app.schemas.registration_schema import (
+            RegistrationCreate,
+            RegistrationStatus,
+        )
         from app.crud.admin_crud import create_admin
         from app.crud.trainee_crud import create_trainee, get_all_trainees
         from app.crud.trainer_crud import create_trainer, get_all_trainers
-        from app.crud.staff_crud import create_staff
-        from app.crud.duty_crud import create_duty
+        from app.crud.staff_crud import create_staff, add_duty_to_staff, get_all_staff
+        from app.crud.duty_crud import create_duty, get_all_duties
         from app.crud.room_crud import create_classroom, create_equipment, get_all_rooms
         from app.crud.course_crud import create_course, get_all_courses
         from app.crud.registration_crud import create_registration
@@ -242,6 +245,19 @@ def init_db():
             create_duty(session, duty)
             print("One duty created.")
 
+        # Create 30 links duty-staff member
+        staff = get_all_staff(session)
+        duties = get_all_duties(session)
+        list_id_pair = []
+        for staff_member in staff:
+            for duty in duties:
+                list_id_pair.append((staff_member.id, duty.id))
+
+        id_pairs = random.sample(list_id_pair, 30)
+        for id_pair in id_pairs:
+            add_duty_to_staff(session, id_pair[0], id_pair[1])
+            print("One link and duty created.")
+
         # Create 20 rooms
         rooms = []
 
@@ -293,7 +309,9 @@ def init_db():
         rooms_subset = random.sample(rooms, 9)
         for i in range(9):
             equipment = InRoomRegisteredEquipmentCreate(
-                name="Beamer" + str(i), serial_number=fake.pystr(10, 10), rooms=[rooms_subset[i]]
+                name="Beamer" + str(i),
+                serial_number=fake.pystr(10, 10),
+                rooms=[rooms_subset[i]],
             )
             create_equipment(equipment, True, session)
             print("One equipment created.")
@@ -303,8 +321,14 @@ def init_db():
         print("One equipment created.")
 
         titles = [
-            "Dev Ia", "Data eng", "Cybersecurity", "Tech Infra",
-            "Apple Pie", "Cobol", "No Code", "Data science"
+            "Dev Ia",
+            "Data eng",
+            "Cybersecurity",
+            "Tech Infra",
+            "Apple Pie",
+            "Cobol",
+            "No Code",
+            "Data science",
         ]
         base_date = datetime(year=2025, month=5, day=20, tzinfo=timezone.utc)
         trainers = get_all_trainers(session)
@@ -319,20 +343,19 @@ def init_db():
             room = random.choice(rooms)
             trainer = random.choice(trainers)
             prerequisite = fake.sentence(nb_words=30)
-            
+
             course = CourseCreate(
-                title = title,
-                description = description,
-                date_start = date_start,
-                date_end = date_end,
-                room_id = room.id,
-                trainer_id = trainer.id,
-                max_capacity = room.capacity,
-                prerequisite = prerequisite,
+                title=title,
+                description=description,
+                date_start=date_start,
+                date_end=date_end,
+                room_id=room.id,
+                trainer_id=trainer.id,
+                max_capacity=room.capacity,
+                prerequisite=prerequisite,
             )
             create_course(session, course)
             print("One course created.")
-
 
         # Create registrations
         trainees = get_all_trainees(session)
@@ -347,7 +370,9 @@ def init_db():
                 trainee_id=trainee.id,
                 course_id=course.id,
                 registration_date=registration_date,
-                registration_status=random.choice([RegistrationStatus.registered, RegistrationStatus.pending]),
+                registration_status=random.choice(
+                    [RegistrationStatus.registered, RegistrationStatus.pending]
+                ),
             )
 
             create_registration(session, registration)
