@@ -66,12 +66,11 @@ def upgrade() -> None:
     sa.UniqueConstraint('serial_number')
     )
     op.create_table('registrations',
-    sa.Column('id', sa.Uuid(), nullable=False),
     sa.Column('trainee_id', sa.Uuid(), nullable=False),
     sa.Column('course_id', sa.Uuid(), nullable=False),
     sa.Column('registration_date', sa.Date(), nullable=False),
     sa.Column('registration_status', sqlmodel.sql.sqltypes.AutoString(), nullable=False),
-    sa.PrimaryKeyConstraint('id')
+    sa.PrimaryKeyConstraint('trainee_id', 'course_id')
     )
     op.create_table('rooms',
     sa.Column('id', sa.Uuid(), nullable=False),
