@@ -1,6 +1,6 @@
 from sqlmodel import Field, Relationship, SQLModel
 from datetime import datetime, timezone
-from app.models.user import User
+from app.models.user import UserBase
 import uuid
 
 
@@ -15,11 +15,11 @@ class DutyStaffLink(SQLModel, table=True):
     duty_id: uuid.UUID = Field(foreign_key="duties.id", primary_key=True)
     staff_id: uuid.UUID = Field(foreign_key="staff.id", primary_key=True)
 
-    duties: "Duty" = Relationship(back_populates="staff_links")
-    staff: "Staff" = Relationship(back_populates="duty_links")
+    duties: "DutyBase" = Relationship(back_populates="staff_links")
+    staff: "StaffBase" = Relationship(back_populates="duty_links")
 
 
-class Staff(User, table=True):
+class StaffBase(UserBase, table=True):
     """
     Staff model that inherits from User.
     This model can be extended with additional fields specific to staff members.
@@ -33,7 +33,7 @@ class Staff(User, table=True):
     duty_links: list[DutyStaffLink] = Relationship(back_populates="staff")
 
 
-class Duty(SQLModel, table=True):
+class DutyBase(SQLModel, table=True):
     """
     Duty model that represents the various duties assigned to staff.
     """

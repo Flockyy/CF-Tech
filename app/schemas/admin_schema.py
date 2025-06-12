@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field
-from app.models.user import User
+from app.models.user import UserBase
 from app.schemas.user_schema import UserCreate, UserUpdate
 from datetime import datetime, timezone
 import uuid
@@ -29,5 +29,5 @@ class AdminUpdate(UserUpdate, BaseModel):
     promotion_date: datetime = Field(None)  # Date of promotion or last update
 
 
-class AdminPublic(User):
+class AdminPublic(UserBase):
     id: uuid.UUID

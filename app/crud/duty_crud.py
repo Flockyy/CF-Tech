@@ -1,10 +1,10 @@
-from app.models.staff import Duty
+from app.models.staff import DutyBase
 from app.schemas.duty_schema import DutyCreate, DutyUpdate
 from sqlmodel import Session, select
 import uuid
 
 
-def create_duty(session: Session, duty: DutyCreate) -> Duty:
+def create_duty(session: Session, duty: DutyCreate) -> DutyBase:
     """
     Create a new duty in the database.
     Args:
@@ -13,14 +13,14 @@ def create_duty(session: Session, duty: DutyCreate) -> Duty:
     Returns:
         Duty: The created duty.
     """
-    db_duty = Duty.model_validate(duty)
+    db_duty = DutyBase.model_validate(duty)
     session.add(db_duty)
     session.commit()
     session.refresh(db_duty)
     return db_duty
 
 
-def get_duty(session: Session, duty_id: uuid.UUID) -> Duty:
+def get_duty(session: Session, duty_id: uuid.UUID) -> DutyBase:
     """
     Retrieve a duty by ID from the database.
     Args:
@@ -29,13 +29,13 @@ def get_duty(session: Session, duty_id: uuid.UUID) -> Duty:
     Returns:
         Duty: The duty object if found, otherwise raises ValueError.
     """
-    db_duty = session.get(Duty, duty_id)
+    db_duty = session.get(DutyBase, duty_id)
     if not db_duty:
         raise ValueError("Duty not found")
     return db_duty
 
 
-def get_all_duties(session: Session) -> list[Duty]:
+def get_all_duties(session: Session) -> list[DutyBase]:
     """
     Retrieve all duties from the database.
     Args:
@@ -43,11 +43,11 @@ def get_all_duties(session: Session) -> list[Duty]:
     Returns:
         list[Duty]: A list of all duty objects.
     """
-    statement = select(Duty)
+    statement = select(DutyBase)
     return session.exec(statement).all()
 
 
-def get_duty_by_title(session: Session, title: str) -> Duty:
+def get_duty_by_title(session: Session, title: str) -> DutyBase:
     """
     Retrieve a duty by its title from the database.
     Args:
@@ -56,12 +56,14 @@ def get_duty_by_title(session: Session, title: str) -> Duty:
     Returns:
         Duty: The duty object if found, otherwise raises ValueError.
     """
-    statement = select(Duty).where(Duty.title == title)
+    statement = select(DutyBase).where(DutyBase.title == title)
     db_duty = session.exec(statement).first()
     return db_duty
 
 
-def update_duty(session: Session, duty_id: uuid.UUID, duty_update: DutyUpdate) -> Duty:
+def update_duty(
+    session: Session, duty_id: uuid.UUID, duty_update: DutyUpdate
+) -> DutyBase:
     """
     Update an existing duty in the database.
     Args:
@@ -71,7 +73,7 @@ def update_duty(session: Session, duty_id: uuid.UUID, duty_update: DutyUpdate) -
     Returns:
         Duty: The updated duty object.
     """
-    db_duty = session.get(Duty, duty_id)
+    db_duty = session.get(DutyBase, duty_id)
     if not db_duty:
         raise ValueError("Duty not found")
 
@@ -94,7 +96,7 @@ def delete_duty(session: Session, duty_id: uuid.UUID) -> None:
     Raises:
         ValueError: If the duty with the given ID does not exist.
     """
-    db_duty = session.get(Duty, duty_id)
+    db_duty = session.get(DutyBase, duty_id)
     if not db_duty:
         raise ValueError("Duty not found")
 

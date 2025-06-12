@@ -1,10 +1,10 @@
 from app.schemas.admin_schema import AdminCreate, AdminUpdate
-from app.models.admin import Admin
+from app.models.admin import AdminBase
 from sqlmodel import Session, select
 import uuid
 
 
-def create_admin(session: Session, admin: AdminCreate) -> Admin:
+def create_admin(session: Session, admin: AdminCreate) -> AdminBase:
     """Create a new admin in the database.
 
     Args:
@@ -15,14 +15,14 @@ def create_admin(session: Session, admin: AdminCreate) -> Admin:
         Admin: The created admin.
     """
 
-    db_admin = Admin.model_validate(admin)
+    db_admin = AdminBase.model_validate(admin)
     session.add(db_admin)
     session.commit()
     session.refresh(db_admin)
     return db_admin
 
 
-def get_admin(session: Session, admin_id: uuid.UUID) -> Admin:
+def get_admin(session: Session, admin_id: uuid.UUID) -> AdminBase:
     """
     Retrieve an admin by ID from the database.
     Args:
@@ -32,10 +32,10 @@ def get_admin(session: Session, admin_id: uuid.UUID) -> Admin:
         Admin: The admin object if found, otherwise None.
     """
 
-    return session.get(Admin, admin_id)
+    return session.get(AdminBase, admin_id)
 
 
-def get_all_admins(session: Session) -> list[Admin]:
+def get_all_admins(session: Session) -> list[AdminBase]:
     """
     Retrieve all admins from the database.
     Args:
@@ -43,11 +43,11 @@ def get_all_admins(session: Session) -> list[Admin]:
     Returns:
         list[Admin]: A list of all admin objects.
     """
-    statement = select(Admin)
+    statement = select(AdminBase)
     return session.exec(statement).all()
 
 
-def get_admin_by_email(session: Session, email: str) -> Admin:
+def get_admin_by_email(session: Session, email: str) -> AdminBase:
     """
     Retrieve an admin by email from the database.
     Args:
@@ -56,13 +56,13 @@ def get_admin_by_email(session: Session, email: str) -> Admin:
     Returns:
         Admin: The admin object if found, otherwise None.
     """
-    statement = select(Admin).where(Admin.email == email)
+    statement = select(AdminBase).where(AdminBase.email == email)
     return session.exec(statement).first()
 
 
 def update_admin(
     session: Session, admin_id: uuid.UUID, admin_update: AdminUpdate
-) -> Admin:
+) -> AdminBase:
     """
     Update an existing admin in the database.
     Args:
@@ -72,7 +72,7 @@ def update_admin(
     Returns:
         Admin: The updated admin object if successful, otherwise None.
     """
-    db_admin = session.get(Admin, admin_id)
+    db_admin = session.get(AdminBase, admin_id)
     if not db_admin:
         return None
     update_data = admin_update.model_dump(exclude_unset=True)
@@ -93,7 +93,7 @@ def delete_admin(session, admin_id: uuid.UUID) -> bool:
     Returns:
         bool: True if the admin was deleted successfully, otherwise False.
     """
-    db_admin = session.get(Admin, admin_id)
+    db_admin = session.get(AdminBase, admin_id)
     if not db_admin:
         return False
     session.delete(db_admin)

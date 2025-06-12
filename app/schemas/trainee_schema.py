@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field, field_validator
-from app.models.user import User
+from app.models.user import UserBase
 from app.schemas.user_schema import UserCreate, UserUpdate
 from datetime import datetime, timedelta, timezone
 from typing import Optional
@@ -18,7 +18,7 @@ class TraineeCreate(UserCreate, BaseModel):
     )
     study_level: Optional[str] = None  # e.g., "Bac", "Bac +2", "Bac +3", etc.
     phone_number: Optional[str] = Field(
-        ..., pattern=r"^(?:\+33|0)[1-9](?:[ .-]?\d{2}){4}$"
+        ..., pattern=r"^(?:\+33 |0)[1-9](?:[ .-]?\d{2}){4}$"
     )
     registration_date: datetime = Field(
         default_factory=lambda: datetime.now(timezone.utc)
@@ -60,7 +60,7 @@ class TraineeUpdate(UserUpdate, BaseModel):
         return value
 
 
-class TraineePublic(User):
+class TraineePublic(UserBase):
     """
     Public model for Trainee that can be used for displaying trainee information.
     This model can be extended with additional fields specific to public views.
