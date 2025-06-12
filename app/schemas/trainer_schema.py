@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field
-from app.models.user import User
+from app.models.user import UserBase
 from app.schemas.user_schema import UserCreate, UserUpdate
 from typing import Optional
 import uuid
@@ -32,7 +32,7 @@ class TrainerUpdate(UserUpdate, BaseModel):
     bio: Optional[str] = Field(default=None, max_length=500)
 
 
-class TrainerPublic(User):
+class TrainerPublic(UserBase):
     """
     Public representation of a trainer.
 

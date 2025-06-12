@@ -4,7 +4,7 @@ from datetime import datetime, timezone
 import uuid
 
 
-class User(SQLModel, table=False):
+class UserBase(SQLModel, table=False):
     """
     User model that serves as a base for other user types like Trainee and Trainer.
 

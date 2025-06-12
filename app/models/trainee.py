@@ -1,10 +1,10 @@
-from .user import User
+from .user import UserBase
 from datetime import datetime, timezone
 from typing import Optional
 from sqlmodel import Field
 
 
-class Trainee(User, table=True):
+class TraineeBase(UserBase, table=True):
     """
     Trainee model that inherits from User.
 
@@ -23,4 +23,5 @@ class Trainee(User, table=True):
     registration_date: datetime = Field(
         default_factory=lambda: datetime.now(timezone.utc)
     )
+    
     # registrations: List["RegistrationBase"] = Relationship(back_populates="trainee")

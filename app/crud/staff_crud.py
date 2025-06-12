@@ -1,15 +1,15 @@
-from app.models.staff import Staff
+from app.models.staff import StaffBase
 from app.models.staff import DutyStaffLink
 from app.schemas.staff_schema import StaffCreate, StaffUpdate
 from sqlmodel import Session, select
 import uuid
 
 
-def create_staff(session: Session, staff: StaffCreate) -> Staff:
+def create_staff(session: Session, staff: StaffCreate) -> StaffBase:
     """
     Create a new staff member in the database.
     """
-    db_staff = Staff.model_validate(staff)
+    db_staff = StaffBase.model_validate(staff)
     session.add(db_staff)
     session.commit()
     session.refresh(db_staff)
@@ -17,25 +17,25 @@ def create_staff(session: Session, staff: StaffCreate) -> Staff:
 
 
 # TODO: Change all str to uuid.UUID for staff_id in the CRUD functions
-def get_staff(session: Session, staff_id: uuid.UUID) -> Staff:
+def get_staff(session: Session, staff_id: uuid.UUID) -> StaffBase:
     """
     Retrieve a staff member by ID from the database.
     """
-    db_staff = session.get(Staff, staff_id)
+    db_staff = session.get(StaffBase, staff_id)
     return db_staff
 
 
-def get_all_staff(session: Session) -> list[Staff]:
+def get_all_staff(session: Session) -> list[StaffBase]:
     """
     Retrieve all staff members from the database.
     """
-    statement = select(Staff)
+    statement = select(StaffBase)
     return session.exec(statement).all()
 
 
 def update_staff(
     session: Session, staff_id: uuid.UUID, staff_update: StaffUpdate
-) -> Staff:
+) -> StaffBase:
     """
     Update an existing staff member in the database.
     Args:
@@ -47,7 +47,7 @@ def update_staff(
     Raises:
         ValueError: If the staff member is not found.
     """
-    db_staff = session.get(Staff, staff_id)
+    db_staff = session.get(StaffBase, staff_id)
     if not db_staff:
         raise ValueError("Staff member not found")
 
@@ -70,7 +70,7 @@ def delete_staff(session: Session, staff_id: uuid.UUID) -> None:
     Raises:
         ValueError: If the staff member is not found.
     """
-    db_staff = session.get(Staff, staff_id)
+    db_staff = session.get(StaffBase, staff_id)
     if not db_staff:
         raise ValueError("Staff member not found")
 
@@ -78,7 +78,7 @@ def delete_staff(session: Session, staff_id: uuid.UUID) -> None:
     session.commit()
 
 
-def get_staff_by_email(session: Session, email: str) -> Staff:
+def get_staff_by_email(session: Session, email: str) -> StaffBase:
     """
     Retrieve a staff member by their email from the database.
     Args:
@@ -87,14 +87,14 @@ def get_staff_by_email(session: Session, email: str) -> Staff:
     Returns:
         Staff: The staff member if found, otherwise None.
     """
-    statement = select(Staff).where(Staff.email == email)
+    statement = select(StaffBase).where(StaffBase.email == email)
     result = session.exec(statement).first()
     return result
 
 
 def add_duty_to_staff(
     session: Session, staff_id: uuid.UUID, duty_id: uuid.UUID
-) -> Staff:
+) -> StaffBase:
     """
     Add a duty to a staff member.
     Args:
@@ -104,7 +104,7 @@ def add_duty_to_staff(
     Returns:
         Staff: The updated staff member with the new duty.
     """
-    db_staff = session.get(Staff, staff_id)
+    db_staff = session.get(StaffBase, staff_id)
     if not db_staff:
         raise ValueError("Staff member not found")
 

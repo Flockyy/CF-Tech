@@ -4,7 +4,7 @@ from datetime import date
 from typing import List, Optional
 import enum
 
-from app.models.trainer import Trainer
+from app.models.trainer import TrainerBase
 
 
 class CourseStatus(str, enum.Enum):
@@ -32,8 +32,8 @@ class CourseBase(SQLModel, table=True):
     status: str = Field(default=CourseStatus.open)
     prerequisite: Optional[str] = None
 
-    trainer: Optional[Trainer] = Relationship(back_populates="courses")
-    registrations: List["RegistrationBase"] = Relationship(back_populates="course")
+    # trainer: Optional[TrainerBase] = Relationship(back_populates="courses")
+    # registrations: List["RegistrationBase"] = Relationship(back_populates="course")
 
 
 def test():

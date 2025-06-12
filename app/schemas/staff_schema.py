@@ -1,6 +1,6 @@
 from pydantic import BaseModel, Field
 from typing import Optional
-from app.models.user import User
+from app.models.user import UserBase
 from app.schemas.user_schema import UserCreate, UserUpdate
 import uuid
 
@@ -29,7 +29,7 @@ class StaffUpdate(UserUpdate, BaseModel):
     position: Optional[str] = Field(None, max_length=100)
 
 
-class StaffPublic(User):
+class StaffPublic(UserBase):
     """
     Public representation of a staff member.
 

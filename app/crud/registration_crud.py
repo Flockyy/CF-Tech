@@ -64,7 +64,7 @@ def test():
     SQLModel.metadata.create_all(engine)
 
     with Session(engine) as session:
-        trainee1 = TraineeCreate(
+        TraineeCreate(
             first_name="Cesar",
             last_name="Gattano",
             email="cesar.gattano@gmail.com",
