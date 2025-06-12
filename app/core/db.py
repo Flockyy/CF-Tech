@@ -21,9 +21,6 @@ def init_db():
     """
     Initialize the database.
     """
-    print("Creating tables...")
-    SQLModel.metadata.create_all(engine)
-
     with Session(engine) as session:
         from sqlmodel import select
         from app.schemas.admin_schema import AdminCreate
