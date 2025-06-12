@@ -8,7 +8,10 @@ import uuid
 class TrainerCreate(UserCreate, BaseModel):
     """
     Trainer creation model that can be used for creating new trainers.
-    This model can be extended with additional fields specific to trainers.
+
+    Args:
+        UserCreate (UserCreate): Base model for user creation.
+        BaseModel (BaseModel): Base model for Pydantic schemas.
     """
 
     specialty: str = Field(..., max_length=100)
@@ -19,7 +22,9 @@ class TrainerCreate(UserCreate, BaseModel):
 class TrainerUpdate(UserUpdate, BaseModel):
     """
     Trainer update model that can be used for updating existing trainers.
-    This model can be extended with additional fields specific to trainers.
+    Args:
+        UserUpdate (UserUpdate): Base model for user updates.
+        BaseModel (BaseModel): Base model for Pydantic schemas.
     """
 
     specialty: Optional[str] = Field(default=None, max_length=100)
@@ -28,4 +33,11 @@ class TrainerUpdate(UserUpdate, BaseModel):
 
 
 class TrainerPublic(UserBase):
+    """
+    Public representation of a trainer.
+
+    Args:
+        User (User): Base user model that provides common user fields.
+    """
+
     id: uuid.UUID

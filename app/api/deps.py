@@ -8,6 +8,11 @@ from app.core.db import engine
 
 
 def get_db() -> Generator[Session, None, None]:
+    """Get a database session.
+
+    Yields:
+        Generator[Session, None, None]: A database session.
+    """
     with Session(engine) as session:
         yield session
 

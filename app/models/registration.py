@@ -1,10 +1,10 @@
-from typing import Optional
+# from typing import Optional
 import uuid
-from sqlmodel import Field, Relationship, SQLModel
+from sqlmodel import Field, SQLModel
 from datetime import date
 
-from app.models.course import CourseBase
-from app.models.trainee import TraineeBase
+# from app.models.course import CourseBase
+# from app.models.trainee import TraineeBase
 
 
 class RegistrationBase(SQLModel, table=True):
@@ -20,8 +20,8 @@ class RegistrationBase(SQLModel, table=True):
     registration_date: date = Field(...)
     registration_status: str = Field(...)
 
-    trainee: Optional[TraineeBase] = Relationship(back_populates="registrations")
-    course: Optional[CourseBase] = Relationship(back_populates="registrations")
+    # trainee: Optional[TraineeBase] = Relationship(back_populates="registrations")
+    # course: Optional[CourseBase] = Relationship(back_populates="registrations")
 
 
 def test():

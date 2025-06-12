@@ -10,8 +10,20 @@ router = APIRouter(prefix="/trainers", tags=["trainers"])
 @router.post("/", response_model=TrainerPublic)
 def create_trainer(*, session: SessionDep, trainer_in: TrainerCreate):
     """
-    Create new trainer.
+    Create a new trainer.
+
+    Args:
+        session (SessionDep): The database session dependency.
+        trainer_in (TrainerCreate): The trainer creation data.
+
+    Raises:
+        HTTPException: If the trainer with this email already exists.
+        HTTPException: If the trainer creation fails.
+
+    Returns:
+        TrainerPublic: The created trainer data.
     """
+
     trainer = trainer_crud.get_trainer_by_email(session=session, email=trainer_in.email)
     if trainer:
         raise HTTPException(
@@ -28,7 +40,20 @@ def create_trainer(*, session: SessionDep, trainer_in: TrainerCreate):
 def get_trainer(*, session: SessionDep, trainer_id: uuid.UUID):
     """
     Get a trainer by ID.
+
+    Args:
+        session (SessionDep): The database session dependency.
+        trainer_id (uuid.UUID): The ID of the trainer to retrieve.
+
+    Raises:
+        HTTPException: If the trainer is not found.
+        HTTPException: If the trainer retrieval fails.
+        HTTPException: If the trainer is inactive.
+
+    Returns:
+        TrainerPublic: The retrieved trainer data.
     """
+
     trainer = trainer_crud.get_trainer(session=session, trainer_id=trainer_id)
     if not trainer:
         raise HTTPException(status_code=404, detail="Trainer not found")
@@ -42,7 +67,20 @@ def update_trainer(
 ):
     """
     Update a trainer by ID.
+
+    Args:
+        session (SessionDep): The database session dependency.
+        trainer_id (uuid.UUID): The ID of the trainer to update.
+        trainer_in (TrainerCreate): The trainer update data.
+
+    Raises:
+        HTTPException: If the trainer is not found.
+        HTTPException: If the trainer update fails.
+
+    Returns:
+        TrainerPublic: The updated trainer data.
     """
+
     trainer = trainer_crud.get_trainer(session=session, trainer_id=trainer_id)
     if not trainer:
         raise HTTPException(status_code=404, detail="Trainer not found")
