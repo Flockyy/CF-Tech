@@ -1,0 +1,27 @@
+from .user import UserBase
+from typing import Optional
+from sqlmodel import Field
+from datetime import datetime
+
+
+class TrainerBase(UserBase, table=True):
+    """
+    Trainer model that inherits from User.
+
+    Args:
+        User (User): Base user model that provides common user fields.
+        table (bool, optional): Whether the model is a SQLAlchemy table. Defaults to True.
+    """
+
+    __tablename__ = "trainers"
+
+    specialty: str = Field(
+        ..., max_length=100
+    )  # e.g., "Data Science", "Web Development"
+    hire_date: datetime = Field(default_factory=datetime.now)
+    hourly_rate: float = Field(..., ge=0)  # Hourly rate for the trainer's services
+    bio: Optional[str] = Field(
+        default=None, max_length=500
+    )  # Short biography of the trainer
+
+    # courses: List["CourseBase"] = Relationship(back_populates="trainer")
