@@ -17,6 +17,17 @@ load_dotenv()
 
 
 def parse_cors(v: Any) -> list[str] | str:
+    """Parse CORS settings.
+
+    Args:
+        v (Any): The CORS settings to parse.
+
+    Raises:
+        ValueError: If the CORS settings are invalid.
+
+    Returns:
+        list[str] | str: The parsed CORS settings.
+    """
     if isinstance(v, str) and not v.startswith("["):
         return [i.strip() for i in v.split(",")]
     elif isinstance(v, list | str):
@@ -25,6 +36,16 @@ def parse_cors(v: Any) -> list[str] | str:
 
 
 class Settings(BaseSettings):
+    """
+    Application settings loaded from environment variables or a .env file.
+
+    Args:
+        BaseSettings (type): The base settings class.
+
+    Returns:
+        type: The settings model configuration.
+    """
+
     model_config = SettingsConfigDict(
         # Use top level .env file (one level above ./backend/)
         env_file="../.env",
@@ -70,10 +91,6 @@ class Settings(BaseSettings):
         )
 
     SQLITE_DB: str = "sqlite:///./database.db"
-    """
-    Application settings loaded from environment variables or a .env file.
-    """
-
     DATABASE_URL: str = os.getenv("DATABASE_URL")
     DB_ADMIN_EMAIL: str = os.getenv("DB_ADMIN_EMAIL")
     DB_ADMIN_FIRSTNAME: str

@@ -1,10 +1,11 @@
-import os, sys
+import os
+import sys
 from typing import Optional
 
 sys.path.append(os.getcwd())
 
 from app.crud.course_crud import get_course_by_title
-from app.crud.trainee_crud import create_trainee, get_trainee
+from app.crud.trainee_crud import get_trainee
 from app.schemas.trainee_schema import TraineeCreate
 
 from sqlmodel import Session, create_engine, SQLModel
@@ -63,7 +64,7 @@ def test():
     SQLModel.metadata.create_all(engine)
 
     with Session(engine) as session:
-        trainee1 = TraineeCreate(
+        TraineeCreate(
             first_name="Cesar",
             last_name="Gattano",
             email="cesar.gattano@gmail.com",

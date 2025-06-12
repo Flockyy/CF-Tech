@@ -95,7 +95,6 @@ def test():
     SQLModel.metadata.create_all(engine)
 
     with Session(engine) as session:
-
         trainer1 = TrainerCreate(
             first_name="Jean",
             last_name="Sérien",

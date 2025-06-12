@@ -18,9 +18,9 @@ load_dotenv()
 
 
 def init_db():
-    # print("Creating tables...")
-    # SQLModel.metadata.create_all(engine)
-
+    """
+    Initialize the database.
+    """
     with Session(engine) as session:
         from sqlmodel import select
         from app.schemas.admin_schema import AdminCreate

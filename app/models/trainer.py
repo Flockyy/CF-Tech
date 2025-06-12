@@ -1,13 +1,16 @@
 from .user import UserBase
-from typing import List, Optional
-from sqlmodel import Field, Relationship
+from typing import Optional
+from sqlmodel import Field
 from datetime import datetime
 
 
 class TrainerBase(UserBase, table=True):
     """
     Trainer model that inherits from User.
-    This model can be extended with additional fields specific to trainers.
+
+    Args:
+        User (User): Base user model that provides common user fields.
+        table (bool, optional): Whether the model is a SQLAlchemy table. Defaults to True.
     """
 
     __tablename__ = "trainers"
@@ -21,4 +24,4 @@ class TrainerBase(UserBase, table=True):
         default=None, max_length=500
     )  # Short biography of the trainer
 
-    courses: List["CourseBase"] = Relationship(back_populates="trainer")
+    # courses: List["CourseBase"] = Relationship(back_populates="trainer")

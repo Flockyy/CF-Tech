@@ -10,7 +10,18 @@ router = APIRouter(prefix="/trainees", tags=["trainees"])
 @router.post("/", response_model=TraineePublic)
 def create_trainee(*, session: SessionDep, trainee_in: TraineeCreate):
     """
-    Create new trainee.
+    Create a new trainee.
+
+    Args:
+        session (SessionDep): The database session dependency.
+        trainee_in (TraineeCreate): The trainee creation data.
+
+    Raises:
+        HTTPException: If the trainee with this email already exists.
+        HTTPException: If the trainee creation fails.
+
+    Returns:
+        TraineePublic: The created trainee data.
     """
     trainee = trainee_crud.get_trainee_by_email(session=session, email=trainee_in.email)
     if trainee:
@@ -28,7 +39,20 @@ def create_trainee(*, session: SessionDep, trainee_in: TraineeCreate):
 def get_trainee(*, session: SessionDep, trainee_id: uuid.UUID):
     """
     Get a trainee by ID.
+
+    Args:
+        session (SessionDep): The database session dependency.
+        trainee_id (uuid.UUID): The ID of the trainee to retrieve.
+
+    Raises:
+        HTTPException: If the trainee is not found.
+        HTTPException: If the trainee retrieval fails.
+        HTTPException: If the trainee is inactive.
+
+    Returns:
+        TraineePublic: The retrieved trainee data.
     """
+
     trainee = trainee_crud.get_trainee(session=session, trainee_id=trainee_id)
     if not trainee:
         raise HTTPException(status_code=404, detail="Trainee not found")
@@ -42,7 +66,20 @@ def update_trainee(
 ):
     """
     Update a trainee by ID.
+
+    Args:
+        session (SessionDep): The database session dependency.
+        trainee_id (uuid.UUID): The ID of the trainee to update.
+        trainee_in (TraineeCreate): The trainee update data.
+
+    Raises:
+        HTTPException: If the trainee is not found.
+        HTTPException: If the trainee update fails.
+
+    Returns:
+        TraineePublic: The updated trainee data.
     """
+
     trainee = trainee_crud.get_trainee(session=session, trainee_id=trainee_id)
     if not trainee:
         raise HTTPException(status_code=404, detail="Trainee not found")
@@ -58,6 +95,16 @@ def update_trainee(
 def delete_trainee(*, session: SessionDep, trainee_id: uuid.UUID):
     """
     Delete a trainee by ID.
+
+    Args:
+        session (SessionDep): The database session dependency.
+        trainee_id (uuid.UUID): The ID of the trainee to delete.
+
+    Raises:
+        HTTPException: If the trainee is not found.
+
+    Returns:
+        dict: A success message.
     """
     trainee = trainee_crud.get_trainee(session=session, trainee_id=trainee_id)
     if not trainee:
@@ -72,6 +119,13 @@ def delete_trainee(*, session: SessionDep, trainee_id: uuid.UUID):
 def list_trainees(*, session: SessionDep):
     """
     List all trainees.
+
+    Args:
+        session (SessionDep): The database session dependency.
+
+    Returns:
+        list[TraineePublic]: The list of all trainees.
     """
+
     trainees = trainee_crud.get_all_trainees(session=session)
     return trainees

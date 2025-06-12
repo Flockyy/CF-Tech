@@ -7,13 +7,25 @@ from app.core.config import settings
 
 
 def custom_generate_unique_id(route: APIRoute) -> str:
+    """
+    Generate a unique ID for each API route.
+
+    Args:
+        route (APIRoute): The API route for which to generate a unique ID.
+
+    Returns:
+        str: A unique ID for the API route.
+    """
+
     return f"{route.tags[0]}-{route.name}"
 
 
+# FastAPI application instance
 app = FastAPI(
     title=settings.PROJECT_NAME,
     openapi_url=f"{settings.API_V1_STR}/openapi.json",
     generate_unique_id_function=custom_generate_unique_id,
+    
 )
 
 # Set all CORS enabled origins
@@ -26,4 +38,5 @@ if settings.all_cors_origins:
         allow_headers=["*"],
     )
 
+# Include the API router
 app.include_router(router, prefix=settings.API_V1_STR)

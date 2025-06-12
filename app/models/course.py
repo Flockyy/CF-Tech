@@ -32,8 +32,8 @@ class CourseBase(SQLModel, table=True):
     status: str = Field(default=CourseStatus.open)
     prerequisite: Optional[str] = None
 
-    trainer: Optional[TrainerBase] = Relationship(back_populates="courses")
-    registrations: List["RegistrationBase"] = Relationship(back_populates="course")
+    # trainer: Optional[TrainerBase] = Relationship(back_populates="courses")
+    # registrations: List["RegistrationBase"] = Relationship(back_populates="course")
 
 
 def test():

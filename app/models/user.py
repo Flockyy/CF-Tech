@@ -7,7 +7,10 @@ import uuid
 class UserBase(SQLModel, table=False):
     """
     User model that serves as a base for other user types like Trainee and Trainer.
-    This model can be extended with additional fields specific to different user roles.
+
+    Args:
+        SQLModel (SQLModel): Base class for SQLAlchemy models.
+        table (bool, optional): Whether the model is a SQLAlchemy table. Defaults to False.
     """
 
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
